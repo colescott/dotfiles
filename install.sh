@@ -27,6 +27,7 @@ if [ "$(ls -A ./backup)" ]; then
     echo "Backup at ~/dot-backup"
 else
     echo "Removing empty backup dir"
+    rmdir ./backup
 fi
 
 
