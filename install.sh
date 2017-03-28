@@ -6,7 +6,7 @@ OS="`uname`"
 
 # Make backup folder
 echo "Making backup dir"
-mkdir -p ~/dot-backup
+mkdir -p ./backup
 
 # Install all Config Files
 echo "Linking Config Files"
@@ -15,7 +15,7 @@ do
     name=${file#files/}
     if [ -e ~/$name ] && [ ! -h ~/$name ]; then
         echo "Backing up $name"
-        cp ~/$name ~/dot-backup
+        cp ~/$name ./backup
     fi
 
     echo "Linking $name"
@@ -23,7 +23,7 @@ do
 done
 
 # Clean up backup dir if empty
-if [ "$(ls -A ~/dot-backup)" ]; then
+if [ "$(ls -A ./backup)" ]; then
     echo "Backup at ~/dot-backup"
 else
     echo "Removing empty backup dir"
