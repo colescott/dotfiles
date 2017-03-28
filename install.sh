@@ -1,3 +1,5 @@
+cd $(dirname $0)
+
 set -e
 
 OS="`uname`"
@@ -11,7 +13,7 @@ echo "Linking Config Files"
 for file in $(find "files" -type f) 
 do
     name=${file#files/}
-    if [ -e ~/$name ]; then
+    if [ -e ~/$name ] && [ ! -h ~/$name ]; then
         echo "Backing up $name"
         cp ~/$name ~/dot-backup
     fi
