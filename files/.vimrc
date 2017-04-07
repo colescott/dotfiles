@@ -1,11 +1,14 @@
+execute pathogen#infect()
+
 set history=500
 
-set mouse=a
+set mouse=r
 
 set showmatch
 
 set number
 set ruler
+set nowrap
 
 set autoread
 set cmdheight=2
