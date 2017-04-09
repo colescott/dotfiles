@@ -36,3 +36,5 @@
     ch = checkout
 [push]
     default = simple
+[commit]
+	gpgsign = true

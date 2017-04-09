@@ -2,7 +2,7 @@ execute pathogen#infect()
 
 set history=500
 
-set mouse=r
+set mouse=a
 
 set showmatch
 

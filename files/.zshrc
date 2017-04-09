@@ -83,5 +83,3 @@ alias g=git
 # added by travis gem
 [ -f /home/cole/.travis/travis.sh ] && source /home/cole/.travis/travis.sh
 
-# Add /usr/bin to path
-export PATH=$PATH:/usr/bin
