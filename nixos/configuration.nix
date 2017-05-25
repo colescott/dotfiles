@@ -111,7 +111,7 @@
     description = "Cole Scott";
     extraGroups = [ "wheel" "networkmanager" ];
     uid = 1000;
-    passwordFile = "./passwords/cole";
+    passwordFile = "/etc/nixos/passwords/cole";
   };
 
   # Disable mutable users to only allow new users through this file
