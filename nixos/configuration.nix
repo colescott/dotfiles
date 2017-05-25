@@ -5,26 +5,17 @@
 { config, pkgs, ... }:
 
 {
-  imports =
+ imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+
+      # Zsh
+      ./programs/zsh.nix
+      
+      # Current machine
+      ./machines/desktop.nix
     ];
 
-  # Use the gummiboot efi boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub.device = "/dev/sda";
-
-  # Set encrypted volume settings
-  boot.initrd.luks.devices = [
-    {
-      name = "root";
-      device = "/dev/sda6";
-      preLVM = true;
-    }
-  ];
-
-  networking.hostName = "cole-nixos"; # Define hostname.
   networking.networkmanager.enable = true; # Enable network manager 
 
   # Set time zone to pacific
@@ -38,12 +29,8 @@
     jdk
     vlc
     libelf
-    (import ./vim.nix) # Vim config
+    (import ./programs/vim.nix) # Vim config
   ];
-
-  # Set default shell to zsh
-  programs.zsh.enable = true;
-  users.defaultUserShell = "/run/current-system/sw/bin/zsh";
 
   # Set default editor to vim
   programs.vim.defaultEditor = true;
@@ -67,12 +54,6 @@
       xkbOptions = "eurosign:e";
       displayManager.sddm.enable = true;
       desktopManager.plasma5.enable = true;
-      videoDrivers = [ "nvidia" ];
-      #synaptics = {
-      #  enable = true;
-      #  vertTwoFingerScroll = true;
-      #  vertEdgeScroll = false;
-      #};
     };
 
     # Enable CUPS to print documents.
@@ -96,7 +77,8 @@
       enable = true;
       nssmdns = true;
     };
-        # SSH for my sanity
+
+    # SSH for my sanity
     openssh = {
       enable = true;
       forwardX11 = true;

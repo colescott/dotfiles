@@ -4,8 +4,6 @@ vim_configurable.customize {
     name = "vim";
     
     vimrcConfig.customRC = ''
-        execute pathogen#infect()
-
         set history=500
 
         set mouse=a
