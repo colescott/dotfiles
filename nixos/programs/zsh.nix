@@ -82,8 +82,6 @@
     # Shorthands
     alias n=npm
     alias g=git
-
-    echo "Init complete"
   '';
 
   programs.zsh.promptInit = ""; # Clear this to avoid a conflict with oh-my-zsh
