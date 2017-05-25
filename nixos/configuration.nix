@@ -5,7 +5,7 @@
 { config, pkgs, ... }:
 
 {
- imports =
+  imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
 
@@ -13,7 +13,7 @@
       ./programs/zsh.nix
       
       # Current machine
-      ./machines/desktop.nix
+      ./machine-configuration.nix
     ];
 
   networking.networkmanager.enable = true; # Enable network manager 
