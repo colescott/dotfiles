@@ -242,6 +242,7 @@ middleClickAction=Close
 onlyGroupWhenFull=false
 showOnlyCurrentDesktop=true
 showOnlyCurrentScreen=true
+showToolTips=false
 
 [Containments][4][Applets][8]
 immutability=1
