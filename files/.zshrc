@@ -22,7 +22,6 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-
 #NVM setup
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -73,6 +72,10 @@ function nix-remove() { nix-env -e $1; }
 function networkman() { nmtui; }
 function x-update-theme() { xrdb -merge ~/.Xresources; }
 function usb() { udisksctl mount -b $1; }
+function kde-restart {
+    2>/dev/null 1>&2 pkill plasmashell;
+    2>/dev/null 1>&2 kstart5 plasmashell;
+}
 
 PATH=$PATH:/usr/local/bin
 
@@ -83,3 +86,4 @@ alias g=git
 # added by travis gem
 [ -f /home/cole/.travis/travis.sh ] && source /home/cole/.travis/travis.sh
 
+fortune -s -o computers | cowthink -f bunny | lolcat

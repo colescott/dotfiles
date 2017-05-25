@@ -1,1 +1,5 @@
 backup
+
+nixos/hardware-configuration.nix
+
+files/.vim/.netrwhist
