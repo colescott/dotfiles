@@ -19,6 +19,8 @@ set hlsearch
 set incsearch
 
 syntax enable
+set background=dark
+colorscheme solarized
 
 set encoding=utf8
 
