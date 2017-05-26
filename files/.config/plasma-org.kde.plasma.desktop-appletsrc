@@ -107,7 +107,7 @@ immutability=1
 plugin=org.kde.plasma.kickoff
 
 [Containments][33][Applets][34][Configuration][General]
-favorites=preferred://browser,systemsettings.desktop,org.kde.dolphin.desktop
+favorites=systemsettings.desktop,org.kde.dolphin.desktop
 
 [Containments][33][Applets][34][Configuration][Shortcuts]
 global=Alt+F1
