@@ -4,3 +4,15 @@
 [submodule "files/.vim/bundle/vim-colors-solarized"]
 	path = files/.vim/bundle/vim-colors-solarized
 	url = git://github.com/altercation/vim-colors-solarized.git
+[submodule "files/.vim/bundle/supertab"]
+	path = files/.vim/bundle/supertab
+	url = git://github.com/vim-scripts/supertab.git
+[submodule "files/.vim/bundle/fugitive"]
+	path = files/.vim/bundle/fugitive
+	url = git://github.com/tpope/vim-fugitive.git
+[submodule "files/.vim/bundle/vim-startify"]
+	path = files/.vim/bundle/vim-startify
+	url = git://github.com/mhinz/vim-startify.git
+[submodule "files/.vim/bundle/alternate"]
+	path = files/.vim/bundle/alternate
+	url = git://github.com/vim-scripts/a.vim.git
