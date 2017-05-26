@@ -130,6 +130,7 @@ DialogWidth=720
 [Containments][33][Applets][36][Configuration][General]
 launchers=file:///home/cole/.local/share/applications/org.kde.konsole.desktop
 showOnlyCurrentScreen=true
+showToolTips=false
 
 [Containments][33][Applets][37]
 immutability=1
@@ -295,6 +296,7 @@ DialogWidth=720
 [Containments][47][Applets][50][Configuration][General]
 launchers=file:///home/cole/.local/share/applications/org.kde.konsole.desktop
 showOnlyCurrentScreen=true
+showToolTips=false
 
 [Containments][47][Applets][51]
 immutability=1
