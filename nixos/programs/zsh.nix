@@ -8,25 +8,6 @@
   users.defaultUserShell = "/run/current-system/sw/bin/zsh";
 
   programs.zsh.interactiveShellInit = ''
-    export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh/
-
-    ZSH_THEME="agnoster"
-
-    # ZSH Config
-    ENABLE_CORRECTION="true"
-    COMPLETION_WAITING_DOTS="true"
-
-    # ZSH Plugins
-    plugins=(
-	  zsh-autosuggestions
-	  npm
-	  node
-	  gitfast
-	  vi-mode
-    )
-
-    source $ZSH/oh-my-zsh.sh
-
     #NVM setup
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -82,6 +63,10 @@
     # Shorthands
     alias n=npm
     alias g=git
+    alias gs=git status
+    
+    # Defaults for commands
+    alias dd="dd status=progress"
   '';
 
   programs.zsh.promptInit = ""; # Clear this to avoid a conflict with oh-my-zsh

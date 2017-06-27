@@ -1,4 +1,14 @@
-execute pathogen#infect()
+call plug#begin()
+
+Plug 'compactcode/alternate.vim'
+Plug 'Raimondi/delimitMate'
+Plug 'tpope/vim-fugitive'
+Plug 'ervandew/supertab'
+Plug 'altercation/vim-colors-solarized'
+Plug 'tpope/vim-sleuth'
+Plug 'mhinz/vim-startify'
+
+call plug#end()
 
 set history=500
 
@@ -47,3 +57,7 @@ set splitright
 
 set noswapfile
 
+au BufWritePost *.elm ElmMakeCurrentFile
+
+
+set notermguicolors

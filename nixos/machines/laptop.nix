@@ -21,9 +21,10 @@
     enable = true;
     vertTwoFingerScroll = true;
     vertEdgeScroll = false;
+    palmDetect = true;
   };
 
-  environment.systemPackages += with pkgs; [
-    xorg.xbacklight
-  ];
+  #environment.systemPackages += with pkgs; [
+  #  xorg.xbacklight
+  #];
 }
