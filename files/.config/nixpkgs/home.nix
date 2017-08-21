@@ -12,12 +12,13 @@ in
     travis heroku git-hub
     stack ghc
     python
-    yarn nodejs-7_x
+    yarn nodejs-8_x 
   ];
 
   programs.git = (import ./git.nix);
+  programs.zsh = (import ./zsh.nix);
 
-  xresources = (import ./xresources.nix);
+  #xresources = (import ./xresources.nix);
 
   services.gpg-agent = {
     enable = true;

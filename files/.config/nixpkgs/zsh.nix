@@ -1,28 +1,17 @@
-# Zsh config
-
-{ config, pkgs, ... }:
-
 {
-  # Set default shell to zsh
-  programs.zsh.enable = true;
-  users.defaultUserShell = "/run/current-system/sw/bin/zsh";
+  enable = true;
+  
+  shellAliases = {
+    zshrc = "$EDITOR ~/.zshrc && source ~/.zshrc";
+    gitconfig = "$EDITOR ~/.gitconfig";
+    nix-config = "sudo $EDITOR /etc/nixos/configuration.nix";
+    n = "npm";
+    g = "git";
+    dd = "dd status=progress";
+    stack = "stack --nix";
+  };
 
-  programs.zsh.interactiveShellInit = ''
-    # npm setup
-    export PATH=$PATH:$HOME/.npm-packages/bin
-
-    # Other config
-    export EDITOR=vim
-
-    #
-    # Aliases
-    #
-
-    # Useful Commands
-    alias zshrc="$EDITOR ~/.zshrc && source ~/.zshrc"
-    alias gitconfig="$EDITOR ~/.gitconfig"
-    alias nix-config="sudo $EDITOR /etc/nixos/configuration.nix"
-
+  initExtra = ''
     function nix-search() { nix-env -qa \* -P | fgrep -i "$1"; }
     function nix-install() { nix-env -iA $1; }
     function nix-list() { nix-env -q; }
@@ -42,14 +31,26 @@
     function x-update-theme() { xrdb -merge ~/.Xresources; }
     function usb() { udisksctl mount -b $1; }
 
-    # Shorthands
-    alias n=npm
-    alias g=git
-    alias gs=git status
-    
-    # Defaults for commands
-    alias dd="dd status=progress"
-  '';
+    [ -n "$TMUX" ] && export TERM=screen-256color
+    #TERM=xterm-256color
 
-  programs.zsh.promptInit = ""; # Clear this to avoid a conflict with oh-my-zsh
+    if ! { [ -n "$TMUX" ]; } then
+      tmux -u2 && exit
+    fi
+
+    # Source zim
+    if [[ -s ''${ZDOTDIR:-''${HOME}}/.zim/init.zsh ]]; then
+      source ''${ZDOTDIR:-''${HOME}}/.zim/init.zsh
+    fi
+
+    PATH=$PATH:/home/cole/.local/bin
+    PATH=$PATH:/home/cole/.cabal/bin
+
+    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.nix-profile/lib
+
+    DEFAULT_USER="cole"
+
+    fortune -s -o computers | cowthink -f bunny | lolcat
+  '';
 }
+

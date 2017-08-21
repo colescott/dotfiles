@@ -16,3 +16,6 @@
 [submodule "files/.vim/bundle/alternate"]
 	path = files/.vim/bundle/alternate
 	url = git://github.com/vim-scripts/a.vim.git
+[submodule "files/.config/nixpkgs/home-manager"]
+	path = files/.config/nixpkgs/home-manager
+	url = https://github.com/rycee/home-manager

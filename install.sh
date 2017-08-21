@@ -15,7 +15,7 @@ do
     name=${file#files/}
     if [ -e ~/$name ] && [ ! -h ~/$name ]; then
         echo "Backing up $name"
-        cp ~/$name ./backup
+        cp -r ~/$name ./backup
     fi
 
     echo "Linking $name"

@@ -9,9 +9,6 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
 
-      # Zsh
-      ./programs/zsh.nix
-
       # mah st petches
       ./programs/st.nix
 
@@ -40,6 +37,9 @@
     (import ./programs/vim.nix) # Vim config
     ((pkgs.callPackage ./programs/nix-home.nix) {})
   ];
+  
+  programs.zsh.enable = true;
+  users.defaultUserShell = "/run/current-system/sw/bin/zsh";
 
   fonts = {
     enableCoreFonts = true;
