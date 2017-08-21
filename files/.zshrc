@@ -14,7 +14,12 @@ if [[ -s ${ZDOTDIR:-${HOME}}/.zim/init.zsh ]]; then
   source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
 fi
 
+PATH=$PATH:/home/cole/.local/bin
 PATH=$PATH:/home/cole/.cabal/bin
+
+# Stack GHC
+alias stack="stack --nix"
+
 
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.nix-profile/lib
 
