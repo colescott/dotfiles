@@ -11,7 +11,10 @@
 
       # Zsh
       ./programs/zsh.nix
-      
+
+      # mah st petches
+      ./programs/st.nix
+
       # Current machine
       ./machine-configuration.nix
     ];
@@ -25,15 +28,41 @@
   nixpkgs.config.allowUnfree = true; # Allows packages with unfree licences
   environment.systemPackages = with pkgs; [
     git gnupg1 
+    dmenu
+    haskellPackages.xmobar
+    st
+    scrot
+    xorg.libX11
     gcc clang wget gnumake unzip vim
     jdk
     vlc
     libelf
     (import ./programs/vim.nix) # Vim config
+    ((pkgs.callPackage ./programs/nix-home.nix) {})
   ];
+
+  fonts = {
+    enableCoreFonts = true;
+    enableFontDir = true;
+    enableGhostscriptFonts = true;
+
+    fontconfig = {
+      defaultFonts = {
+        monospace = [ "Meslo LG L for Powerline" ];
+      };
+    };
+    fonts = with pkgs; [
+      powerline-fonts
+      source-code-pro
+      emojione
+    ];
+  };
 
   # Set default editor to vim
   programs.vim.defaultEditor = true;
+
+  # VirtualBox
+  virtualisation.virtualbox.host.enable = true;
 
   # Enable pulse audio 
   hardware.pulseaudio.enable = true;
@@ -52,8 +81,26 @@
       enable = true;
       layout = "us";
       xkbOptions = "eurosign:e";
-      displayManager.sddm.enable = true;
-      desktopManager.plasma5.enable = true;
+      
+      displayManager = {
+        slim = {
+          enable = true;
+          defaultUser = "cole";
+        };  
+      };
+
+      windowManager.xmonad = {
+        enable = true;
+        enableContribAndExtras = true;
+        extraPackages = haskellPackages: with haskellPackages; [
+          haskellPackages.xmonad-contrib
+          haskellPackages.xmonad-extras
+        ];
+      };
+      windowManager.default = "xmonad";
+
+      desktopManager.default = "none";
+      desktopManager.xterm.enable = false;
     };
 
     # Enable CUPS to print documents.
@@ -61,6 +108,9 @@
       enable = true;
       drivers = [ pkgs.gutenprint ];
     };
+
+    # Manual
+    nixosManual.showManual = true;
 
     # Enable geoclue location service
     geoclue2.enable = true;
@@ -77,13 +127,6 @@
       enable = true;
       nssmdns = true;
     };
-
-    # SSH for my sanity
-    openssh = {
-      enable = true;
-      forwardX11 = true;
-    };
-
   };
 
   # Define user account
