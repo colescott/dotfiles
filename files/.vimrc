@@ -4,15 +4,44 @@ Plug 'compactcode/alternate.vim'
 Plug 'Raimondi/delimitMate'
 Plug 'tpope/vim-fugitive'
 Plug 'ervandew/supertab'
-Plug 'altercation/vim-colors-solarized'
+Plug 'jumski/vim-colors-solarized'
 Plug 'tpope/vim-sleuth'
 Plug 'mhinz/vim-startify'
+Plug 'vim-syntastic/syntastic'
+Plug 'bitc/vim-hdevtools'
+Plug 'ElmCast/elm-vim'
 
 call plug#end()
 
-set history=500
+syntax enable
+set background=dark
+colorscheme solarized
 
-set mouse=a
+hi! link Search ColorColumn
+hi! link QuickFixLine ColorColumn
+
+" Synastic syntax checking
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+
+let g:elm_syntastic_show_warnings = 1
+let g:syntastic_elm_checkers = ['elm_make']
+
+nmap <leader>sp :call <SID>SynStack()<CR>
+function! <SID>SynStack()
+    if !exists("*synstack")
+        return
+    endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+
+set history=500
 
 set showmatch
 
@@ -21,16 +50,12 @@ set ruler
 set nowrap
 
 set autoread
-set cmdheight=2
+set cmdheight=1
 
 set ignorecase
 set smartcase
 set hlsearch
 set incsearch
-
-syntax enable
-set background=dark
-colorscheme solarized
 
 set encoding=utf8
 
@@ -52,12 +77,13 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+cnoreabbrev W w
+
 set splitbelow
 set splitright
 
 set noswapfile
 
-au BufWritePost *.elm ElmMakeCurrentFile
-
+"au BufWritePost *.elm ElmMake
 
 set notermguicolors
