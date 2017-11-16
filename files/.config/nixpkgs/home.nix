@@ -1,24 +1,30 @@
-let
-  pkgs= import (fetchTarball http://nixos.org/channels/nixos-unstable/nixexprs.tar.xz) {};
-in
+{ pkgs, ... }:
+
 {
   home.packages = with pkgs; [
     htop fortune cowsay lolcat
     google-chrome spotify slack
     discord steam xboxdrv
     xclip
+    xorg.xbacklight
     tmux
+    neovim
     nox
-    travis heroku git-hub
+    travis git-hub
     stack ghc
     python
-    yarn nodejs-8_x 
+    nodejs-8_x
+    yarn 
+    elmPackages.elm
+    elmPackages.elm-format
+    elmPackages.elm-reactor
   ];
 
   programs.git = (import ./git.nix);
-  programs.zsh = (import ./zsh.nix);
 
   #xresources = (import ./xresources.nix);
+
+  services.xscreensaver.enable = true;
 
   services.gpg-agent = {
     enable = true;

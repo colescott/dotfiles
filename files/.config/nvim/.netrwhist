@@ -1,0 +1,9 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =7
+let g:netrw_dirhist_1='/home/cole/kiwi/project-lime/client'
+let g:netrw_dirhist_2='/home/cole/kiwi/project-lime/client/src'
+let g:netrw_dirhist_3='/home/cole/kiwi/project-lime/client/src/Generated'
+let g:netrw_dirhist_4='/home/cole/kiwi/project-lime/docs'
+let g:netrw_dirhist_5='/home/cole/kiwi/project-lime/lime/src'
+let g:netrw_dirhist_6='/home/cole/kiwi/project-lime/lime/src/Models'
+let g:netrw_dirhist_7='/home/cole/tmp'

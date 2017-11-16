@@ -1,8 +1,8 @@
 diff --git a/config.def.h b/config.def.h
-index 58b470e..f1c5ed1 100644
+index b41747f..8bdcc87 100644
 --- a/config.def.h
 +++ b/config.def.h
-@@ -51,30 +51,23 @@ static unsigned int tabspaces = 8;
+@@ -84,31 +84,23 @@ static unsigned int tabspaces = 8;
  
  /* Terminal colors (16 first used in escape sequence) */
  static const char *colorname[] = {
@@ -30,6 +30,7 @@ index 58b470e..f1c5ed1 100644
 -
 -	/* more colors can be added after 255 to use with DefaultXX */
 -	"#cccccc",
+-	"#555555",
 +	/* solarized dark */
 +	"#073642",  /*  0: black    */
 +	"#dc322f",  /*  1: red      */
@@ -50,16 +51,18 @@ index 58b470e..f1c5ed1 100644
  };
  
  
-@@ -82,9 +75,9 @@ static const char *colorname[] = {
+@@ -116,10 +108,10 @@ static const char *colorname[] = {
   * Default colors (colorname index)
-  * foreground, background, cursor
+  * foreground, background, cursor, reverse cursor
   */
 -static unsigned int defaultfg = 7;
 -static unsigned int defaultbg = 0;
 -static unsigned int defaultcs = 256;
+-static unsigned int defaultrcs = 257;
 +static unsigned int defaultfg = 12;
 +static unsigned int defaultbg = 8;
 +static unsigned int defaultcs = 14;
++static unsigned int defaultrcs = 15;
  
  /*
-  * Colors used, when the specific fg == defaultfg. So in reverse mode this
+  * Default shape of cursor

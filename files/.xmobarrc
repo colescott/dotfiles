@@ -1,0 +1,23 @@
+Config { font = "xft:Meslo LG S for Powerline"
+        , bgColor = "#002b36"
+        , fgColor = "#657b83"
+        , position = Static { xpos = 0, ypos = 0, width = 1800, height = 24 }
+        , commands = [
+              Run Weather "KSFO" ["-t","KSFO: <tempF>F","-L","50","-H","70","--normal","#859900","--high","#dc322f","--low","#268bd2"] 36000
+            , Run Network "enp1s0" ["-L","0","-H","32","--normal","#859900","--high","#dc322f"] 10
+            , Run Network "wlp2s0" ["-L","0","-H","32","--normal","#859900","--high","#dc322f"] 10
+            , Run Cpu ["-L","0","-H","50","--normal","#859900","--high","#dc322f"] 10
+            , Run Memory ["-t","Mem: <usedratio>%","-H","75","--normal","#859900","--high","#dc322f"] 10
+            , Run Swap ["-H","75","--normal","#859900","--high","#dc322f"] 10
+            , Run Com "uname" ["-n"] "" 36000
+            , Run Date "%k:%M:%S" "date" 10
+            , Run StdinReader
+            , Run Battery ["-t", "<acstatus>: <left>% - <timeleft>", "--","-O", "AC", "-o", "Bat", "-h", "#859900","-l", "#dc322f"] 10
+            , Run Com "/run/current-system/sw/bin/sh" ["/home/cole/.local/bin/volume.sh"] "myvolume" 1
+          ] 
+        , sepChar = "%"
+        , lowerOnStart = False
+        , alignSep = "}{"
+        , template = "%StdinReader% | %cpu% | %memory% %swap% | %enp1s0%%wlp2s0% }{%date% | %battery% | %myvolume% | %KSFO% | "
+        }
+

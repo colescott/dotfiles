@@ -69,7 +69,7 @@ xterm*color13:                 S_violet
 xterm*color14:                 S_base1
 xterm*color15:                 S_base3
 
-xterm*faceName: xft:Menlo for Powerline:aspect=0.9
+xterm*faceName: xft:Fira Code:aspect=0.9
 xterm*faceSize: 13
 
 

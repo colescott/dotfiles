@@ -4,11 +4,11 @@
 
 {
   nixpkgs.config.packageOverrides = pkgs: {
-    st = pkgs.callPackage ./st {
+    st = pkgs.st.override {
       patches =
-        [ ./st/st-meslo-for-powerline.diff
-          ./st/st-solarized-dark.diff
-          ./st/st-0.5-no-bold-colors.diff ];
+        [ ./st/st-meslo-for-powerline-0.7.diff
+          ./st/st-solarized-dark-0.7.diff
+          ./st/st-no_bold_colors-0.7.diff ];
     };
   };
 }

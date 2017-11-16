@@ -10,7 +10,7 @@
       ./hardware-configuration.nix
 
       # mah st petches
-      ./programs/st.nix
+      # ./programs/st.nix
 
       # Current machine
       ./machine-configuration.nix
@@ -25,19 +25,23 @@
   nixpkgs.config.allowUnfree = true; # Allows packages with unfree licences
   environment.systemPackages = with pkgs; [
     git gnupg1 
-    dmenu
+    dmenu stalonetray
     haskellPackages.xmobar
-    st
+    konsole
     scrot
-    xorg.libX11
+    xorg.libX11 xorg.libxcb xdg_utils
     gcc clang wget gnumake unzip vim
-    jdk
+    jdk 
     vlc
     libelf
     (import ./programs/vim.nix) # Vim config
     ((pkgs.callPackage ./programs/nix-home.nix) {})
   ];
   
+  #This seems to break my boot :/
+  #virtualisation.docker.enable = true;
+  #virtualisation.docker.package = pkgs.docker-edge;
+
   programs.zsh.enable = true;
   users.defaultUserShell = "/run/current-system/sw/bin/zsh";
 
@@ -54,6 +58,9 @@
     fonts = with pkgs; [
       powerline-fonts
       source-code-pro
+      fira
+      fira-code
+      fira-mono
       emojione
     ];
   };
@@ -68,8 +75,15 @@
   hardware.pulseaudio.enable = true;
 
   # Enable steam support
-  hardware.opengl.driSupport32Bit = true;
+  hardware.opengl = {
+    driSupport = true;
+    driSupport32Bit = true;
+  };
   hardware.pulseaudio.support32Bit = true;
+
+  # pretty boot logo
+  boot.plymouth.enable = true;
+  boot.plymouth.theme = "glow";
 
   #
   # Services:
@@ -80,7 +94,7 @@
     xserver = {
       enable = true;
       layout = "us";
-      xkbOptions = "eurosign:e";
+      xkbOptions = "caps:swapescape,  eurosign:e";
       
       displayManager = {
         slim = {
@@ -134,8 +148,9 @@
     isNormalUser = true;
     home = "/home/cole";
     description = "Cole Scott";
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [ "wheel" "networkmanager" "docker" ];
     uid = 1000;
+    shell = "/run/current-system/sw/bin/zsh";
     passwordFile = "/etc/nixos/passwords/cole";
   };
 
@@ -143,6 +158,6 @@
   users.mutableUsers = false;
 
   # The NixOS release to be compatible with for stateful data such as databases.
-  system.stateVersion = "17.03";
-
+  system.stateVersion = "17.09";
+  system.copySystemConfiguration = true;
 }
