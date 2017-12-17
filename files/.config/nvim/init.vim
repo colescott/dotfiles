@@ -8,12 +8,14 @@ Plug 'pbogut/deoplete-elm'
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 Plug 'tpope/vim-sensible'
 Plug 'vim-airline/vim-airline'
-Plug 'scrooloose/syntastic'
+Plug 'w0rp/ale'
+Plug 'sbdchd/neoformat'
 Plug 'elmcast/elm-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'scrooloose/nerdtree'
 Plug 'jszakmeister/vim-togglecursor'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'dansomething/vim-eclim'
 
 call plug#end()
 
@@ -25,13 +27,33 @@ colorscheme solarized
 let g:deoplete#enable_at_startup = 1
 " Deoplete tab completion
 inoremap <silent><expr> <TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<TAB>" :
-    \ deoplete#mappings#manual_complete()
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ deoplete#mappings#manual_complete()
 function! s:check_back_space() abort "{{{
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
 endfunction"}}}
+
+" Ale
+let g:ale_sign_column_always = 1
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '--'
+let g:airline#extensions#ale#enabled = 1
+
+let g:ale_linters = {
+      \   'javascript': ['eslint'],
+      \}
+
+" Neoformat
+"let g:neoformat_basic_format_align = 1
+"let g:neoformat_basic_format_retab = 1
+"let g:neoformat_basic_format_trim = 0
+let g:neoformat_enabled_cpp = ['astyle']
+augroup fmt
+  autocmd!
+  autocmd BufWritePre * undojoin | Neoformat
+augroup END
 
 " General
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -40,6 +62,7 @@ let mapleader=" "
 set number
 set ignorecase
 set noswapfile
+set nocompatible
 set completeopt=longest,menuone
 
 " Airline

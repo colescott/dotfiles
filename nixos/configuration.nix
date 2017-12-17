@@ -16,7 +16,7 @@
       ./machine-configuration.nix
     ];
 
-  networking.networkmanager.enable = true; # Enable network manager 
+  networking.networkmanager.enable = true; # Enable network manager
 
   # Set time zone to pacific
   time.timeZone = "US/Pacific";
@@ -24,20 +24,20 @@
   # Default packages
   nixpkgs.config.allowUnfree = true; # Allows packages with unfree licences
   environment.systemPackages = with pkgs; [
-    git gnupg1 
+    git gnupg1
     dmenu stalonetray
     haskellPackages.xmobar
     konsole
     scrot
     xorg.libX11 xorg.libxcb xdg_utils
     gcc clang wget gnumake unzip vim
-    jdk 
+    jdk
     vlc
     libelf
     (import ./programs/vim.nix) # Vim config
     ((pkgs.callPackage ./programs/nix-home.nix) {})
   ];
-  
+
   #This seems to break my boot :/
   #virtualisation.docker.enable = true;
   #virtualisation.docker.package = pkgs.docker-edge;
@@ -71,7 +71,7 @@
   # VirtualBox
   virtualisation.virtualbox.host.enable = true;
 
-  # Enable pulse audio 
+  # Enable pulse audio
   hardware.pulseaudio.enable = true;
 
   # Enable steam support
@@ -83,24 +83,24 @@
 
   # pretty boot logo
   boot.plymouth.enable = true;
-  boot.plymouth.theme = "glow";
+  boot.plymouth.theme = "tribar";
 
   #
   # Services:
-  #  
+  #
   services = {
-    
+
     # Xserver
     xserver = {
       enable = true;
       layout = "us";
       xkbOptions = "caps:swapescape,  eurosign:e";
-      
+
       displayManager = {
         slim = {
           enable = true;
           defaultUser = "cole";
-        };  
+        };
       };
 
       windowManager.xmonad = {

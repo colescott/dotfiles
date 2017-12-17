@@ -8,13 +8,14 @@
     xclip
     xorg.xbacklight
     tmux
-    neovim
+    neovim uncrustify
+    cmus
     nox
     travis git-hub
     stack ghc
     python
     nodejs-8_x
-    yarn 
+    yarn
     elmPackages.elm
     elmPackages.elm-format
     elmPackages.elm-reactor

@@ -15,6 +15,9 @@
     }
   ];
 
+  #boot.loader.grub.gfxmodeEfi = "1024x768";
+  boot.loader.grub.gfxmodeBios = "auto";
+
   networking.hostName = "cole-nixos-laptop"; # Define hostname.
 
   services.xserver.synaptics = {

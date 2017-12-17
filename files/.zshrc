@@ -41,8 +41,9 @@ fi
 PATH=$PATH:/home/cole/.local/bin
 PATH=$PATH:/home/cole/.cabal/bin
 PATH=$PATH:/home/cole/.npm-packages/bin
+PATH=$PATH:/home/cole/.bin
 
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+#LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 DEFAULT_USER="cole"
 
@@ -60,5 +61,6 @@ alias n='npm'
 alias nix-config='sudo $EDITOR /etc/nixos/configuration.nix'
 alias stack='stack --nix'
 alias zshrc='$EDITOR ~/.zshrc && source ~/.zshrc'
+alias uncrustify='uncrustify -c ~/.uncrustify'
 
 
