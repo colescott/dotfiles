@@ -9,9 +9,6 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
 
-      # mah st petches
-      # ./programs/st.nix
-
       # Current machine
       ./machine-configuration.nix
     ];
