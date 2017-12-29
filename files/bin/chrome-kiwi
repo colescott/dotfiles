@@ -1,0 +1,1 @@
+google-chrome-stable --user-data-dir=~/.config/google-chrome-kiwi --class="chrome-kiwi" 
