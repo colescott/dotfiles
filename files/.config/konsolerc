@@ -1,0 +1,21 @@
+[Desktop Entry]
+DefaultProfile=Solarized.profile
+
+[Favorite Profiles]
+Favorites=Solarized.profile
+
+[KonsoleWindow]
+SaveGeometryOnExit=false
+ShowAppNameOnTitleBar=false
+ShowMenuBarByDefault=false
+
+[MainWindow]
+State=AAAA/wAAAAD9AAAAAAAAB34AAAQLAAAABAAAAAQAAAAIAAAACPwAAAAA
+ToolBarsMovable=Disabled
+Window-Maximized 1080x1920=true
+
+[Notification Messages]
+CloseAllTabs=true
+
+[TabBar]
+TabBarVisibility=AlwaysHideTabBar

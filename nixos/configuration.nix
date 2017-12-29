@@ -31,7 +31,7 @@
     jdk
     vlc
     libelf
-    (import ./programs/vim.nix) # Vim config
+    vim
     ((pkgs.callPackage ./programs/nix-home.nix) {})
   ];
 

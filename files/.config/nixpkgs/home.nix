@@ -4,6 +4,7 @@
   home.packages = with pkgs; [
     htop fortune cowsay lolcat
     google-chrome spotify slack
+    lastpass-cli
     discord steam xboxdrv
     xclip
     xorg.xbacklight
@@ -13,9 +14,7 @@
     nox
     travis git-hub
     stack ghc
-    python
-    nodejs-8_x
-    yarn
+    python ruby nodejs-8_x yarn
     elmPackages.elm
     elmPackages.elm-format
     elmPackages.elm-reactor
