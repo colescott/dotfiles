@@ -1,27 +1,56 @@
 call plug#begin('~/.local/share/nvim/plugged')
-
+" General stuff
+Plug 'tpope/vim-sensible'
 Plug 'Raimondi/delimitMate'
 Plug 'jumski/vim-colors-solarized'
 Plug 'tpope/vim-sleuth'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'pbogut/deoplete-elm'
-Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
-Plug 'tpope/vim-sensible'
-Plug 'vim-airline/vim-airline'
-Plug 'w0rp/ale'
-Plug 'sbdchd/neoformat'
-Plug 'elmcast/elm-vim'
-Plug 'sheerun/vim-polyglot'
 Plug 'scrooloose/nerdtree'
 Plug 'jszakmeister/vim-togglecursor'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'dansomething/vim-eclim'
+Plug 'iamcco/markdown-preview.vim'
+
+" Git
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+
+" Deoplete
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'pbogut/deoplete-elm'
+Plug 'zchee/deoplete-go', { 'do': 'make' }
+Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+Plug 'mhartington/nvim-typescript'
+
+" Airline stuff
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" Ale linter
+Plug 'w0rp/ale'
+
+" Misc
+Plug 'elmcast/elm-vim'
+Plug 'sheerun/vim-polyglot'
+Plug 'fatih/vim-go'
 
 call plug#end()
 
+" General
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+" Speedyboi
+set updatetime=250
+set fillchars+=vert:\
+let mapleader=" "
+set number
+set spell
+set ignorecase
+set noswapfile
+set nocompatible
+set completeopt=longest,menuone
 syntax enable
 set background=dark
 colorscheme solarized
+set notermguicolors
+set cursorline
 
 " Deoplete
 let g:deoplete#enable_at_startup = 1
@@ -34,40 +63,46 @@ function! s:check_back_space() abort "{{{
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~ '\s'
 endfunction"}}}
+" Deoplete go support
+let g:deoplete#sources#go#gocode_binary = "/home/cole/go/bin/gocode"
+let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
+
 
 " Ale
 let g:ale_sign_column_always = 1
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '--'
+let g:ale_fix_on_save = 1
 let g:airline#extensions#ale#enabled = 1
-
+" Error and warning signs.
+let g:ale_sign_error = '⤫'
+let g:ale_sign_warning = '⚑'
+hi link ALEWarningSign  Warning
+let g:ale_change_sign_column_color = 1
+" Linters for languages
 let g:ale_linters = {
       \   'javascript': ['eslint'],
+      \   'haskell': ['stack-ghc-mod', 'hlint'],
+      \   'go': ['gofmt', 'go build', 'golint'],
+      \   'rust': ['rls']
       \}
-
-" Neoformat
-"let g:neoformat_basic_format_align = 1
-"let g:neoformat_basic_format_retab = 1
-"let g:neoformat_basic_format_trim = 0
-let g:neoformat_enabled_cpp = ['astyle']
-augroup fmt
-  autocmd!
-  autocmd BufWritePre * undojoin | Neoformat
-augroup END
-
-" General
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-set fillchars+=vert:\ 
-let mapleader=" "
-set number
-set ignorecase
-set noswapfile
-set nocompatible
-set completeopt=longest,menuone
+let g:ale_fixers = {
+      \   'javascript': ['prettier'],
+      \   'cpp': ['clang-format'],
+      \   'rust': ['rustfmt'],
+      \   'typescript': ['prettier']
+      \}
+hi ALEWarningSign ctermfg=3 guifg=Black guibg=Yellow
 
 " Airline
-let g:airline_left_sep= '░'
-let g:airline_right_sep= '░'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
+let g:airline_theme = 'solarized'
+
+" Enable unused import detection for JS/JSX files
+nnoremap <leader>ji :w<CR>:call clearmatches()<CR>:let cmd = system('unused -v true ' . expand('%'))<CR>:exec cmd<CR>
+
+" GitGutter
+let g:gitgutter_override_sign_column_highlight = 0
+
 
 " NerdTree
 map <LEADER>f :NERDTreeToggle<CR>
@@ -76,29 +111,22 @@ let g:NERDTreeMinimalUI = 1
 autocmd VimEnter * if (0 == argc()) | NERDTree | endif
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-" Syntastic
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_wq = 1
-let g:airline#extensions#syntastic#enabled = 0
 
 " Elm
 let g:polyglot_disabled = ['elm']
 let g:elm_detailed_complete = 1
 let g:elm_format_autosave = 1
-let g:elm_syntastic_show_warnings = 1
-let g:syntastic_elm_checkers = ['elm_make']
+
 
 " Markdown
 autocmd BufNewFile,BufRead *.md set spell | set lbr | set nonu
 let g:markdown_fenced_languages = ['html', 'json', 'css', 'javascript', 'elm', 'vim']
 
-hi! link Search ColorColumn
-hi! link QuickFixLine ColorColumn
-
 set history=500
-
+set clipboard+=unnamedplus
 set showmatch
+set wildmode=list:full
+set wildmenu
 
 set number
 set ruler
@@ -117,12 +145,13 @@ set incsearch
 set encoding=utf8
 
 set expandtab
-set smarttab
 set shiftwidth=4
 set tabstop=4
 set autoindent
 
 set undolevels=1000
+set undofile
+set undodir=~/.neovim/undodir
 
 " Folds
 set foldmethod=indent
@@ -148,12 +177,8 @@ cnoreabbrev Wq wq
 cnoreabbrev Q q
 cnoreabbrev WQ wq
 
-
 set splitbelow
 set splitright
-
 set noswapfile
-
-set notermguicolors
 
 imap jj <Esc>

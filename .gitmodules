@@ -19,3 +19,12 @@
 [submodule "files/.config/nixpkgs/home-manager"]
 	path = files/.config/nixpkgs/home-manager
 	url = https://github.com/rycee/home-manager
+[submodule "files/zimfw"]
+	path = files/zimfw
+	url = https://github.com/zimfw/zimfw.git
+[submodule "files/.zim"]
+	path = files/.zim
+	url = https://github.com/zimfw/zimfw.git
+[submodule ".zim"]
+	path = files/.zim
+	url = https://github.com/zimfw/zimfw.git

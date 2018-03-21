@@ -8,23 +8,9 @@ OS="`uname`"
 echo "Making backup dir"
 mkdir -p ./backup
 
-# Install all Config Files
-echo "Linking Config Files"
-for file in $(find "files" -type f) 
-do
-    name=${file#files/}
-    if [ -e ~/$name ] && [ ! -h ~/$name ]; then
-        echo "Backing up $name"
-        cp -r ~/$name ./backup
-    fi
-
-    echo "Linking $name"
-    mkdir -p ~/$(dirname $name)
-    ln -sf $(pwd)/files/$name ~/$name
-done
-
 # nixos config must be run as root!
 if [ $EUID = 0 ]; then
+    echo "Script running as root. Not symlinking home folder."
     echo "Backing up nixos folder"
     cp -rn /etc/nixos ./backup
 
@@ -33,6 +19,20 @@ if [ $EUID = 0 ]; then
     sudo ln -sf $(pwd)/nixos /etc/nixos
 else
     echo "Script not running as root, skipping nixos"
+    # Install all Config Files
+    echo "Linking Config Files"
+    for file in $(find "files" -type f) 
+    do
+        name=${file#files/}
+        if [ -e ~/$name ] && [ ! -h ~/$name ]; then
+            echo "Backing up $name"
+            cp -r ~/$name ./backup
+        fi
+
+        echo "Linking $name"
+        mkdir -p ~/$(dirname $name)
+        ln -sf $(pwd)/files/$name ~/$name
+    done
 fi
 
 # Clean up backup dir if empty
