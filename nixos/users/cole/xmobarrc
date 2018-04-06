@@ -17,4 +17,3 @@ Config { font = "xft:Fira Code Retina"
         , alignSep = "}{"
         , template = "%StdinReader% | %cpu% | %memory% | %enp0s31f6% %wlp4s0% }{%date% | %battery% | %myvolume% | "
         }
-

@@ -37,6 +37,11 @@
     fsType = "ext4";
   };
 
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/C54B-A107";
+    fsType = "vfat";
+  };
+
   networking.hostName = "cole-nixos-thinkpad"; # Define hostname.
 
   services.xserver.synaptics = {

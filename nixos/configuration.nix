@@ -7,6 +7,15 @@
 
       # Current machine
       ./machine-configuration.nix
+
+      # Udev rules
+      ./udev.nix
+
+      # Docker virtualisation
+      ./docker.nix
+
+      # Home manager
+      "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos"
     ];
 
   networking.networkmanager.enable = true; # Enable network manager
@@ -25,13 +34,8 @@
     xorg.libX11 xorg.libxcb xdg_utils
     gcc clang wget gnumake unzip vim
     jdk
-    vlc
     libelf
-    ((pkgs.callPackage ./programs/nix-home.nix) {})
   ];
-
-  virtualisation.docker.enable = true;
-  virtualisation.docker.package = pkgs.docker-edge;
 
   programs.zsh.enable = true;
   users.defaultUserShell = "/run/current-system/sw/bin/zsh";
@@ -61,8 +65,8 @@
   programs.vim.defaultEditor = true;
 
   # VirtualBox
-  virtualisation.virtualbox.host.enable = true;
-  nixpkgs.config.virtualbox.enableExtensionPack = true;
+  # virtualisation.virtualbox.host.enable = true;
+  # nixpkgs.config.virtualbox.enableExtensionPack = true;
 
   # Enable pulse audio
   hardware.pulseaudio = {
@@ -91,8 +95,6 @@
       enable = true;
       layout = "us";
       xkbOptions = "caps:swapescape, eurosign:e";
-
-      #videoDrivers = [ "nvidiaLegacy340" "intel" ];
 
       windowManager.xmonad = {
         enable = true;
@@ -159,28 +161,6 @@ Option "RightOf" "eDPI1"
       enable = true;
       nssmdns = true;
     };
-
-    # Udev U2F support
-    # and Xbox support
-    udev.extraRules = ''
-ACTION!="add|change", GOTO="u2f_end"
-
-# Yubico YubiKey
-KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1050", ATTRS{idProduct}=="0113|0114|0115|0116|0120|0402|0403|0406|0407|0410", MODE="0660", GROUP="users", TAG+="uaccess"
-
-LABEL="u2f_end"
-
-# This fixes the issue where Steam  weren't detecting the controller. My
-# theory is that the games needed (wanted) access to the raw USB device rather
-# than any interface (/dev/js0)
-#
-# Device info:
-# ID 045e:028e Microsoft Corp. Xbox360 Controller
-# fix permissions on /dev/usb/???/???
-SUBSYSTEM=="usb", ATTRS{idVendor}=="045e", ATTRS{idProduct}=="028e", GROUP="plugdev", MODE="0664"
-# fix permissions on /dev/input/event*
-SUBSYSTEMS=="input" ATTRS{name}=="Microsoft X-Box 360 pad", GROUP="plugdev", MODE="0640"
-    '';
   };
 
   # U2F PAM
@@ -191,24 +171,18 @@ SUBSYSTEMS=="input" ATTRS{name}=="Microsoft X-Box 360 pad", GROUP="plugdev", MOD
     isNormalUser = true;
     home = "/home/cole";
     description = "Cole Scott";
-    extraGroups = [ "wheel" "networkmanager" "vboxusers" ];
+    extraGroups = [ "wheel" "networkmanager" "vboxusers" "plugdev" ];
     uid = 1000;
     shell = "/run/current-system/sw/bin/zsh";
     passwordFile = "/etc/nixos/passwords/cole";
   };
-  users.extraGroups.docker = {
-    name = "docker";
-    members = [ "cole" ];
-  };
-  users.extraGroups.plugdev = {
-    name = "plugdev";
-    members = [ "cole" ];
-  };
+  # Import home-manager config
+  home-manager.users.cole = import ./users/cole { pkgs = pkgs; };
 
   # Disable mutable users to only allow new users through this file
   users.mutableUsers = false;
 
   # The NixOS release to be compatible with for stateful data such as databases.
-  system.stateVersion = "17.09";
+  system.stateVersion = "18.03";
   system.copySystemConfiguration = true;
 }

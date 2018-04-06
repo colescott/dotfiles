@@ -1,3 +1,4 @@
+''
 call plug#begin('~/.local/share/nvim/plugged')
 " General stuff
 Plug 'tpope/vim-sensible'
@@ -182,3 +183,4 @@ set splitright
 set noswapfile
 
 imap jj <Esc>
+''

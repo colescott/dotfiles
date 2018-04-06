@@ -1,5 +1,6 @@
 import           Graphics.X11.ExtraTypes.XF86
 import           System.IO
+import           Control.Monad
 
 import XMonad ((-->), (.|.), (=?), (<+>), (|||))
 import qualified XMonad as X
@@ -58,7 +59,7 @@ main =
                                  (myLogPP copies)
         , X.layoutHook = spacing 4 $ Docks.avoidStruts $ noBorders $
             named "T" (ResizableTall 1 (2/100) (1/2) []) |||
-            named "F" (X.Full)
+            named "F" X.Full
         , X.handleEventHook =
                 Docks.docksEventHook
             <+> Bars.dynStatusBarEventHook barCreator barDestroyer
@@ -78,9 +79,9 @@ main =
         [ ((X.controlMask, X.xK_Print), X.spawn "sleep 0.2; scrot -s ~/Screenshots/%b%d::%H%M%S.png")
         , ((0, X.xK_Print), X.spawn "scrot ~/Screenshots/%b%d.%H:%M:%S.png")
         , ((myModMask .|. X.shiftMask, X.xK_z), X.spawn "xscreensaver-command -lock")
-        , ((0, xF86XK_AudioLowerVolume   ), lowerVolume 2 >> return ())
-        , ((0, xF86XK_AudioRaiseVolume   ), raiseVolume 2 >> return ())
-        , ((0, xF86XK_AudioMute          ), toggleMute >> return ())
+        , ((0, xF86XK_AudioLowerVolume   ), Control.Monad.void (lowerVolume 2))
+        , ((0, xF86XK_AudioRaiseVolume   ), Control.Monad.void (raiseVolume 2))
+        , ((0, xF86XK_AudioMute          ), Control.Monad.void toggleMute)
         , ((0, xF86XK_MonBrightnessUp    ), X.spawn "xbacklight -inc 10")
         , ((0, xF86XK_MonBrightnessDown  ), X.spawn "xbacklight -dec 10")
         ]
@@ -88,10 +89,7 @@ main =
 startup = do
     Bars.dynStatusBarStartup barCreator barDestroyer
     X.spawn "feh --bg-scale ~/wallpaper.png"
-    X.spawn "compton -f -D 2"
-    X.spawn "stalonetray"
-    X.spawn "Franz"
-    X.spawn "konsole --profile \"IRSSI\""
+    X.spawn "franz"
 
 {---------------
 -  Status bar  -
@@ -128,5 +126,5 @@ barDestroyer = return ()
 
 -- Stuffs to check things
 isAndroid :: X.Query Bool
-isAndroid = (X.className =? "emulator64-arm")
+isAndroid = X.className =? "emulator64-arm"
 
