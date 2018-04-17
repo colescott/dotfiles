@@ -1,34 +1,27 @@
-let pkgsUnstable = import (
-    fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz
-) { }; in { pkgs, ... }:
+{ pkgs, ... }:
 
 {
   home.packages = with pkgs; [
-    htop fortune cowsay lolcat feh
-    google-chrome slack
-    lastpass-cli google-play-music-desktop-player
-    discord steam xboxdrv
-    xclip stalonetray
-    xorg.xbacklight
-    tmux
-    uncrustify
-    cmus
-    nox nix-index
+    fortune cowsay lolcat
+    google-chrome slack spotify discord
+    lastpass-cli
+    steam xboxdrv # Steam + utils
+    nox nix-index # Nix utils
     travis git-hub
+
+    # Programming languages
     stack ghc
     go
     nodejs-8_x yarn
-    elmPackages.elm
-    elmPackages.elm-format
-    elmPackages.elm-reactor
-    python
-    python3
+    elmPackages.elm elmPackages.elm-format elmPackages.elm-reactor
+    python python3
 
-    # Git diff
+    uncrustify
+
+    zathura # PDF Viewer
+    alsaUtils # Volume control
     gitAndTools.diff-so-fancy
-
-    # For rust
-    rustup
+    rustup # Rust version manager
 
     (import ../../programs/franz.nix)
   ];
@@ -39,25 +32,22 @@ let pkgsUnstable = import (
 
   programs.git = import ./git.nix;
   programs.zsh = import ./zsh.nix { pkgs = pkgs; };
-  programs.neovim = {
+  programs.neovim = import ./neovim.nix;
+  xsession = {
     enable = true;
-    withPython3 = true;
-    withPython = true;
-    configure.customRC = import ./neovim.nix;
+    windowManager.xmonad = {
+      enable = true;
+      config = ./xmonad.hs;
+      enableContribAndExtras = true;
+      extraPackages = haskellPackages: with haskellPackages; [
+        haskellPackages.xmonad-contrib
+        haskellPackages.xmonad-extras
+      ];
+    };
+    initExtra = ''
+      light-locker &
+    '';
   };
-
-  xsession.enable = true;
-  xsession.windowManager.xmonad = {
-    enable = true;
-    config = ./xmonad.hs;
-    enableContribAndExtras = true;
-    extraPackages = haskellPackages: with haskellPackages; [
-      haskellPackages.xmonad-contrib
-      haskellPackages.xmonad-extras
-    ];
-  };
-
-  services.xscreensaver.enable = true;
 
   # compton is used as a window compositor
   services.compton = {
@@ -97,5 +87,4 @@ save-exact = true
   '';
   home.file.".xmobarrc".source = ./xmobarrc;
   home.file.".tmux.conf".source = ./tmux.conf;
-
 }

@@ -65,12 +65,11 @@ main =
             <+> Bars.dynStatusBarEventHook barCreator barDestroyer
         , X.workspaces = ["1", "2:web", "3:kiwi", "4", "5:social", "6", "7", "8", "9"]
         , X.manageHook = X.composeAll
-          [ isAndroid --> ManageHelpers.doCenterFloat
-          , ManageHelpers.isFullscreen --> ManageHelpers.doFullFloat
+          [ isAndroid                             --> ManageHelpers.doCenterFloat
+          , ManageHelpers.isFullscreen            --> ManageHelpers.doFullFloat
           , X.className =? "chrome-kiwi"          --> X.doShift "3:kiwi"
           , X.className =? "Google-chrome"        --> X.doShift "2:web"
           , X.className =? "Franz"                --> X.doShift "5:social"
-          , X.stringProperty "WM_NAME" =? "IRSSI" --> X.doShift "5:social"
           , X.className =? "VirtualBox"           --> X.doShift "9:vm"
           , X.className =? "stalonetray"          --> X.doIgnore
           , Docks.manageDocks
@@ -78,7 +77,7 @@ main =
         } `additionalKeys`
         [ ((X.controlMask, X.xK_Print), X.spawn "sleep 0.2; scrot -s ~/Screenshots/%b%d::%H%M%S.png")
         , ((0, X.xK_Print), X.spawn "scrot ~/Screenshots/%b%d.%H:%M:%S.png")
-        , ((myModMask .|. X.shiftMask, X.xK_z), X.spawn "xscreensaver-command -lock")
+        , ((myModMask .|. X.shiftMask, X.xK_z), X.spawn "light-locker-command --lock")
         , ((0, xF86XK_AudioLowerVolume   ), Control.Monad.void (lowerVolume 2))
         , ((0, xF86XK_AudioRaiseVolume   ), Control.Monad.void (raiseVolume 2))
         , ((0, xF86XK_AudioMute          ), Control.Monad.void toggleMute)

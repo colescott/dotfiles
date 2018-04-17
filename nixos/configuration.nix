@@ -18,8 +18,6 @@
       "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos"
     ];
 
-  networking.networkmanager.enable = true; # Enable network manager
-
   # Set time zone to pacific
   time.timeZone = "US/Pacific";
 
@@ -29,10 +27,11 @@
     git gnupg1
     dmenu stalonetray
     haskellPackages.xmobar
-    konsole compton xscreensaver
-    scrot
+    konsole compton lightlocker xorg.xbacklight
+    scrot feh xclip
     xorg.libX11 xorg.libxcb xdg_utils
-    gcc clang wget gnumake unzip vim
+    gcc clang wget gnumake
+    unzip vim cmus tmux htop
     jdk
     libelf
   ];
@@ -77,6 +76,9 @@
   # Bluetooth
   hardware.bluetooth.enable = true;
 
+  # Enable network manager
+  networking.networkmanager.enable = true;
+
   # Enable steam support
   hardware.opengl.driSupport32Bit = true;
 
@@ -95,6 +97,7 @@
       enable = true;
       layout = "us";
       xkbOptions = "caps:swapescape, eurosign:e";
+      videoDrivers = [ "intel" "nvidia"];
 
       windowManager.xmonad = {
         enable = true;
@@ -144,7 +147,11 @@ Option "RightOf" "eDPI1"
     };
 
     # Manual
-    nixosManual.showManual = true;
+    nixosManual = {
+      showManual = true;
+      # Use tty9 for manual to avoid showing when light-locker runs
+      ttyNumber = 9;
+    };
 
     # Enable geoclue location service
     geoclue2.enable = true;
@@ -161,6 +168,12 @@ Option "RightOf" "eDPI1"
       enable = true;
       nssmdns = true;
     };
+
+    hoogle = {
+      enable = true;
+      port = 1248;
+      packages = hp: with hp; [ text lens base aeson servant servant-server protolude persistent persistent-template containers mtl transformers ];
+    };
   };
 
   # U2F PAM
@@ -171,7 +184,7 @@ Option "RightOf" "eDPI1"
     isNormalUser = true;
     home = "/home/cole";
     description = "Cole Scott";
-    extraGroups = [ "wheel" "networkmanager" "vboxusers" "plugdev" ];
+    extraGroups = [ "wheel" "networkmanager" "vboxusers" "plugdev" "docker" ];
     uid = 1000;
     shell = "/run/current-system/sw/bin/zsh";
     passwordFile = "/etc/nixos/passwords/cole";
