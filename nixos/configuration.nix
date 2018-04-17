@@ -36,51 +36,18 @@
     libelf
   ];
 
-  programs.zsh.enable = true;
-  users.defaultUserShell = "/run/current-system/sw/bin/zsh";
-
-  fonts = {
-    enableCoreFonts = true;
-    enableFontDir = true;
-    enableGhostscriptFonts = true;
-
-    fontconfig = {
-      defaultFonts = {
-        monospace = [ "Fira Code Light" ];
-      };
+  # Hardware defaults
+  hardware = {
+    pulseaudio = {
+      enable = true;
+      support32Bit = true;
     };
-    fonts = with pkgs; [
-      powerline-fonts
-      source-code-pro
-      fira
-      fira-code
-      fira-code-symbols
-      fira-mono
-      emojione
-    ];
+    bluetooth.enable = true;
+    opengl.driSupport32Bit = true;
   };
-
-  # Set default editor to vim
-  programs.vim.defaultEditor = true;
-
-  # VirtualBox
-  # virtualisation.virtualbox.host.enable = true;
-  # nixpkgs.config.virtualbox.enableExtensionPack = true;
-
-  # Enable pulse audio
-  hardware.pulseaudio = {
-    enable = true;
-    support32Bit = true;
-  };
-
-  # Bluetooth
-  hardware.bluetooth.enable = true;
 
   # Enable network manager
   networking.networkmanager.enable = true;
-
-  # Enable steam support
-  hardware.opengl.driSupport32Bit = true;
 
   # pretty boot logo
   boot.plymouth = {
@@ -102,48 +69,38 @@
       windowManager.xmonad = {
         enable = true;
         enableContribAndExtras = true;
-        extraPackages = haskellPackages: with haskellPackages; [
-          haskellPackages.xmonad-contrib
-          haskellPackages.xmonad-extras
+        extraPackages = hp: with hp; [
+          xmonad-contrib
+          xmonad-extras
         ];
       };
 
       displayManager.lightdm = {
         enable = true;
+        background = "/etc/nixos/users/cole/wallpaper.png";
+        greeters.gtk.enable = true;
       };
 
       windowManager.default = "xmonad";
-      desktopManager.default = "none";
-      desktopManager.xterm.enable = false;
-
-      # Xrandr
-      xrandrHeads = [
-        {
-          output = "eDPI1";
-          primary = true;
-          monitorConfig = ''
-DisplaySize 1920 1080
-          '';
-        }
-        {
-          output = "HDMI2";
-          monitorConfig = ''
-DisplaySize 1920 1080
-Option "RightOf" "eDPI1"
-          '';
-        }
-      ];
+      desktopManager = {
+        default = "none";
+        xterm.enable = false;
+      };
     };
 
     postgresql.enable = true;
 
+    # Smart card util
     pcscd.enable = true;
-    tlp.enable = true;
 
-    # Enable CUPS to print documents.
+    # Battery/power utils
+    tlp.enable = true;
+    acpid.enable = true;
+
+    # Enable CUPS
     printing = {
       enable = true;
-      drivers = [ pkgs.gutenprint ];
+      drivers = with pkgs; [ gutenprint ];
     };
 
     # Manual
@@ -179,23 +136,49 @@ Option "RightOf" "eDPI1"
   # U2F PAM
   security.pam.enableU2F = true;
 
+  # Set default programs
+  programs.vim.defaultEditor = true;
+  programs.zsh.enable = true;
+
   # Define user account
-  users.extraUsers.cole = {
-    isNormalUser = true;
-    home = "/home/cole";
-    description = "Cole Scott";
-    extraGroups = [ "wheel" "networkmanager" "vboxusers" "plugdev" "docker" ];
-    uid = 1000;
-    shell = "/run/current-system/sw/bin/zsh";
-    passwordFile = "/etc/nixos/passwords/cole";
+  users = {
+    extraUsers.cole = {
+      isNormalUser = true;
+      home = "/home/cole";
+      description = "Cole Scott";
+      extraGroups = [ "wheel" "networkmanager" "vboxusers" "plugdev" "docker" ];
+      uid = 1000;
+      shell = pkgs.zsh;
+      passwordFile = "/etc/nixos/passwords/cole";
+    };
+    mutableUsers = false;
+    defaultUserShell = pkgs.zsh;
   };
   # Import home-manager config
   home-manager.users.cole = import ./users/cole { pkgs = pkgs; };
 
-  # Disable mutable users to only allow new users through this file
-  users.mutableUsers = false;
+  # Install pretty fonts
+  fonts = {
+    enableCoreFonts = true;
+    enableFontDir = true;
+    enableGhostscriptFonts = true;
 
-  # The NixOS release to be compatible with for stateful data such as databases.
-  system.stateVersion = "18.03";
+    fontconfig = {
+      defaultFonts = {
+        monospace = [ "Fira Code Light" ];
+      };
+    };
+    fonts = with pkgs; [
+      powerline-fonts
+      source-code-pro
+      fira
+      fira-code
+      fira-code-symbols
+      fira-mono
+      emojione
+    ];
+  };
+
   system.copySystemConfiguration = true;
+  system.stateVersion = "18.03";
 }
