@@ -81,6 +81,9 @@ main =
         , ((0, xF86XK_AudioLowerVolume   ), Control.Monad.void (lowerVolume 2))
         , ((0, xF86XK_AudioRaiseVolume   ), Control.Monad.void (raiseVolume 2))
         , ((0, xF86XK_AudioMute          ), Control.Monad.void toggleMute)
+        , ((0, xF86XK_AudioPlay          ), X.spawn "cmus-remote --pause")
+        , ((0, xF86XK_AudioNext          ), X.spawn "cmus-remote --next")
+        , ((0, xF86XK_AudioPrev          ), X.spawn "cmus-remote --prev")
         , ((0, xF86XK_MonBrightnessUp    ), X.spawn "xbacklight -inc 10")
         , ((0, xF86XK_MonBrightnessDown  ), X.spawn "xbacklight -dec 10")
         ]

@@ -6,7 +6,7 @@
     google-chrome slack spotify discord
     lastpass-cli
     steam xboxdrv # Steam + utils
-    nox nix-index # Nix utils
+    nox nix-index nix-repl # Nix utils
     travis git-hub
 
     # Programming languages
@@ -15,6 +15,7 @@
     nodejs-8_x yarn
     elmPackages.elm elmPackages.elm-format elmPackages.elm-reactor
     python python3
+    transmission
 
     uncrustify
 

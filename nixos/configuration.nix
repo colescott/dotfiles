@@ -37,23 +37,33 @@
   ];
 
   # Hardware defaults
-  hardware = {
-    pulseaudio = {
-      enable = true;
-      support32Bit = true;
-    };
-    bluetooth.enable = true;
-    opengl.driSupport32Bit = true;
+  hardware.pulseaudio = {
+    enable = true;
+    support32Bit = true;
   };
+  hardware.bluetooth.enable = true;
+  hardware.opengl.driSupport32Bit = true;
 
   # Enable network manager
   networking.networkmanager.enable = true;
+  networking.firewall = {
+    enable = true;
+    allowPing = false;
+    allowedTCPPorts = [];
+    allowedUDPPorts = [];
+  };
+
 
   # pretty boot logo
   boot.plymouth = {
     enable = true;
     theme = "tribar";
   };
+
+  # Security
+  security.lockKernelModules = true;
+  security.pam.enableU2F = true;
+  boot.loader.systemd-boot.editor = false;
 
   #
   # Services:
@@ -132,9 +142,6 @@
       packages = hp: with hp; [ text lens base aeson servant servant-server protolude persistent persistent-template containers mtl transformers ];
     };
   };
-
-  # U2F PAM
-  security.pam.enableU2F = true;
 
   # Set default programs
   programs.vim.defaultEditor = true;

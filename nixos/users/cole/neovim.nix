@@ -28,6 +28,7 @@ in
         "The_NERD_tree" # File tree
         "tmux-navigator"
         "vim-airline" "vim-airline-themes" # Better status bar
+        "supertab" # Tab complete
 
         "ale" # Lint and complete
         "LanguageClient-neovim"
