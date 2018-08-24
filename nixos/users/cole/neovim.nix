@@ -17,7 +17,7 @@ in
   withPython3 = true;
   withPython = true;
   configure = {
-    customRC = import ./nvimrc;
+    customRC = builtins.readFile ./nvimrc;
     vam.knownPlugins = pkgs.vimPlugins // customPackages;
     vam.pluginDictionaries = [
       { names = [
@@ -40,6 +40,7 @@ in
         "typescript-vim"
         "vim-go"
         "vim-polyglot" # Package of 100+ language plugins
+        "idris-vim"
         ]; 
       }
       {

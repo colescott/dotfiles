@@ -1,7 +1,7 @@
 Config { font = "xft:Fira Code Retina"
         , bgColor = "#042C4D"
         , fgColor = "#698787"
-        , position = Static { xpos = 0, ypos = 0, width = 1800, height = 24 }
+        , position = TopSize L 90 24
         , commands = [
               Run Network "enp0s31f6" ["-L","0","-H","32","--normal","#878269","--high","#A34F4F"] 10
             , Run Network "wlp4s0" ["-L","0","-H","32","--normal","#878269","--high","#A34F4F"] 10

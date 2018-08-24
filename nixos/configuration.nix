@@ -14,8 +14,20 @@
       # Docker virtualisation
       ./docker.nix
 
+      # Zsh config
+      ./zsh.nix
+
       # Home manager
-      "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos"
+      "${builtins.fetchGit {
+        url = https://github.com/rycee/home-manager;
+        ref = "master";
+      }}/nixos"
+
+      # Zimfw module
+      ./modules/zimfw
+
+      # Users
+      ./users
     ];
 
   # Set time zone to pacific
@@ -23,17 +35,69 @@
 
   # Default packages
   nixpkgs.config.allowUnfree = true; # Allows packages with unfree licences
+  nixpkgs.config.packageOverrides = pkgs: {
+      steam = pkgs.steam.override {
+        extraPkgs = pkgs: with pkgs; [
+          gnome3.gtk
+          zlib
+          dbus
+          freetype
+          glib
+          atk
+          cairo
+          gdk_pixbuf
+          pango
+          fontconfig
+          xorg.libxcb
+        ];
+      };
+    };
   environment.systemPackages = with pkgs; [
-    git gnupg1
-    dmenu stalonetray
-    haskellPackages.xmobar
-    konsole compton lightlocker xorg.xbacklight
-    scrot feh xclip
-    xorg.libX11 xorg.libxcb xdg_utils
-    gcc clang wget gnumake
-    unzip vim cmus tmux htop
+    # GTK
+    lxappearance
+    breeze-gtk
+
+    # Interface
+    compton lightlocker xorg.xbacklight
+    scrot feh
+
+    # Command line utils
+    git
+    xclip xdg_utils
+    alsaUtils # Volume control
+    transmission # Torrent client
+    unzip wget gnumake
+    travis git-hub
+    vim tmux htop
+    cmus ranger newsboat
+
+    # Libraries and utils
     jdk
     libelf
+    xorg.libX11 xorg.libxcb
+    ntfs3g # Write support for NTFS
+
+    # Applications
+    google-chrome slack spotify discord
+    steam xboxdrv # Steam + utils
+    nox nix-index nix-repl # Nix utils
+
+    # Programming languages
+    gcc clang # C(++)
+    stack ghc # Haskell
+    idris # Idris
+    go # Go
+    nodejs-8_x yarn # Node
+    elmPackages.elm elmPackages.elm-format elmPackages.elm-reactor # Elm
+    python python3 # Pseudocode
+
+    uncrustify astyle
+
+    zathura # PDF Viewer
+    gitAndTools.diff-so-fancy
+    rustup # Rust version manager
+
+    (import ./programs/franz.nix)
   ];
 
   # Hardware defaults
@@ -43,16 +107,19 @@
   };
   hardware.bluetooth.enable = true;
   hardware.opengl.driSupport32Bit = true;
+  # hardware.bumblebee.enable = true;
 
   # Enable network manager
-  networking.networkmanager.enable = true;
-  networking.firewall = {
-    enable = true;
-    allowPing = false;
-    allowedTCPPorts = [];
-    allowedUDPPorts = [];
+  networking = {
+    networkmanager.enable = true;
+    firewall = {
+      enable = false;
+      allowPing = false;
+      allowedTCPPorts = [];
+      allowedUDPPorts = [];
+    };
+    nameservers = [ "1.1.1.1" "1.0.0.1" ];
   };
-
 
   # pretty boot logo
   boot.plymouth = {
@@ -61,7 +128,6 @@
   };
 
   # Security
-  security.lockKernelModules = true;
   security.pam.enableU2F = true;
   boot.loader.systemd-boot.editor = false;
 
@@ -74,7 +140,7 @@
       enable = true;
       layout = "us";
       xkbOptions = "caps:swapescape, eurosign:e";
-      videoDrivers = [ "intel" "nvidia"];
+      # videoDrivers = [ "nvidia" "intel" ];
 
       windowManager.xmonad = {
         enable = true;
@@ -96,6 +162,24 @@
         default = "none";
         xterm.enable = false;
       };
+
+      dpi = 96;
+      xrandrHeads = [
+        {
+          output = "eDP1";
+          primary = true;
+          monitorConfig = ''
+DisplaySize 1920 1080
+          '';
+        }
+        {
+          output = "DP2-2";
+          monitorConfig = ''
+DisplaySize 1920 1080
+Option "RightOf" "eDP1"
+          '';
+        }
+      ];
     };
 
     postgresql.enable = true;
@@ -139,30 +223,20 @@
     hoogle = {
       enable = true;
       port = 1248;
-      packages = hp: with hp; [ text lens base aeson servant servant-server protolude persistent persistent-template containers mtl transformers ];
+      packages = hp: with hp; [
+        text lens base
+        aeson servant servant-server
+        protolude
+        persistent persistent-template
+        containers mtl transformers
+        xmonad xmonad-contrib xmonad-extras
+      ];
     };
   };
 
   # Set default programs
   programs.vim.defaultEditor = true;
   programs.zsh.enable = true;
-
-  # Define user account
-  users = {
-    extraUsers.cole = {
-      isNormalUser = true;
-      home = "/home/cole";
-      description = "Cole Scott";
-      extraGroups = [ "wheel" "networkmanager" "vboxusers" "plugdev" "docker" ];
-      uid = 1000;
-      shell = pkgs.zsh;
-      passwordFile = "/etc/nixos/passwords/cole";
-    };
-    mutableUsers = false;
-    defaultUserShell = pkgs.zsh;
-  };
-  # Import home-manager config
-  home-manager.users.cole = import ./users/cole { pkgs = pkgs; };
 
   # Install pretty fonts
   fonts = {

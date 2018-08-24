@@ -1,0 +1,12 @@
+background "#042C4D"
+grow_gravity "NW"
+icon_gravity "NW"
+icon_size "24"
+skip_taskbar true
+sticky true
+window_layer "bottom"
+window_type "dock"
+
+# To be computed by xmonad
+geometry "8x1-0+0"
+max_geometry "8x1-160+0"

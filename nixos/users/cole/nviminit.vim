@@ -1,4 +1,3 @@
-''
 let g:deoplete#enable_at_startup = 1
 
 let g:LanguageClient_serverCommands = {
@@ -119,4 +118,3 @@ set splitbelow
 set splitright
 
 imap jj <Esc>
-''

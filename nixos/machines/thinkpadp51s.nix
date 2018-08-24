@@ -3,7 +3,7 @@
 {
   # Use the gummiboot efi boot loader.
   boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  #boot.loader.efi.canTouchEfiVariables = true;
 
   # Basic kernel modules
   boot.initrd.kernelModules = [ "vfat" "nls_cp437" "nls_iso8859-1" "usbhid" ];
@@ -28,9 +28,6 @@
   # Set encrypted volume settings
   swapDevices = [ { device = "/dev/luks-vg/swap"; } ];
 
-  # Latest and greatest kernel
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
   fileSystems."/" = {
     label = "root";
     device = "/dev/luks-vg/root";
@@ -42,14 +39,14 @@
     fsType = "vfat";
   };
 
-  fileSystems."/mnt/D❤ddy" = {
-    device = "/dev/disk/by-uuid/b5c7a574-9f3a-40d1-bfbd-e954f60ada68";
-    fsType = "ext4";
+  fileSystems."/mnt/ext5" = {
+    device = "/dev/disk/by-uuid/F6BA35F3BA35B14B";
+    fsType = "ntfs";
     neededForBoot = false;
-    options = ["defaults" "noatime" "user"];
+    options = ["defaults" "noatime" "user" "nofail"];
   };
 
-  networking.hostName = "cole-nixos-thinkpad"; # Define hostname.
+  networking.hostName = "cole-nixos-thinkpad";
 
   services.xserver.synaptics = {
     enable = true;

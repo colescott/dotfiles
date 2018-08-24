@@ -1,7 +1,7 @@
 .PHONY: install-nixos
 install-nixos:
 	cd nixos && find . -type d -exec mkdir -p /etc/nixos/{} \;
-	cd nixos && find . -type f -exec ln {} /etc/nixos/{} \;
+	cd nixos && find . -type f -exec ln -f {} /etc/nixos/{} \;
 
 .PHONY: install-home
 install-home:
