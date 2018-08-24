@@ -45,9 +45,20 @@ pkgs:
   };
 
   # All home config files
-  home.file.".npmrc".source = ./npmrc;
-  home.file.".xmobarrc".source = ./xmobarrc;
-  home.file.".tmux.conf".source = ./tmux.conf;
-  home.file.".stalonetrayrc".source =  ./stalontrayrc;
-  home.file.".config/kitty/kitty.conf".source = ./kitty.conf;
+  home.file.".npmrc".source = ./files/npmrc;
+  home.file.".xmobarrc".source = ./files/xmobarrc;
+  home.file.".tmux.conf".source = ./files/tmux.conf;
+  home.file.".stalonetrayrc".source =  ./files/stalontrayrc;
+  home.file.".config/kitty/kitty.conf".source = ./files/kitty.conf;
+  home.file."wallpaper.png".source = ./files/wallpaper.png;
+
+  # Bin dir
+  home.file.".local/bin/chrome" = {
+    text = "google-chrome-stable";
+    executable = true;
+  };
+  home.file.".local/bin/volume.sh" = {
+    source = ./files/volume.sh;
+    executable = true;
+  };
 }

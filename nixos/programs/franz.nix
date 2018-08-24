@@ -65,7 +65,7 @@ in stdenv.mkDerivation rec {
     homepage = http://meetfranz.com;
     license = licenses.free;
     maintainers = [ maintainers.gnidorah ];
-    platforms = ["linux"];
+    platforms = stdenv.lib.platforms.all;
     hydraPlatforms = [];
   };
 }
