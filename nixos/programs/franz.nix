@@ -1,12 +1,13 @@
-with import <nixpkgs> {};
+{ stdenv, pkgs, makeDesktopItem, fetchurl, makeWrapper
+, xdg_utils }:
 
 let
   version = "5.0.0-beta.17";
 
-  runtimeDeps = [
+  runtimeDeps = with pkgs; [
     udev libnotify
   ];
-  deps = (with xorg; [
+  deps = with pkgs; ( with xorg; [
     libXi libXcursor libXdamage libXrandr libXcomposite libXext libXfixes
     libXrender libX11 libXtst libXScrnSaver libxcb
   ]) ++ [

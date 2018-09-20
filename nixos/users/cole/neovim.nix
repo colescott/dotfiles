@@ -17,7 +17,7 @@ in
   withPython3 = true;
   withPython = true;
   configure = {
-    customRC = builtins.readFile ./nvimrc;
+    customRC = builtins.readFile ./nviminit.vim;
     vam.knownPlugins = pkgs.vimPlugins // customPackages;
     vam.pluginDictionaries = [
       { names = [
@@ -41,7 +41,7 @@ in
         "vim-go"
         "vim-polyglot" # Package of 100+ language plugins
         "idris-vim"
-        ]; 
+        ];
       }
       {
         name = "deoplete-nvim";

@@ -92,7 +92,7 @@ runXmonad prefs@Preferences{..} =
                 >>= \copies ->
                   Bars.multiPP (logPPActive colorPreferences copies)
                                  (logPP colorPreferences copies)
-        , X.layoutHook = spacingWithEdge 4 $ Docks.avoidStruts $ noBorders $
+        , X.layoutHook = Docks.avoidStruts $ noBorders $
             named "T" (ResizableTall 1 (2/100) (1/2) []) |||
             named "F" X.Full
         , X.handleEventHook =

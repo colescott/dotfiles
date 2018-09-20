@@ -20,7 +20,7 @@
       # Home manager
       "${builtins.fetchGit {
         url = https://github.com/rycee/home-manager;
-        ref = "master";
+        ref = "release-18.03";
       }}/nixos"
 
       # Zimfw module
@@ -97,7 +97,7 @@
     gitAndTools.diff-so-fancy
     rustup # Rust version manager
 
-    (import ./programs/franz.nix)
+    (callPackage ./programs/franz.nix {})
   ];
 
   # Hardware defaults
