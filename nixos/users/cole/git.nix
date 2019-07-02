@@ -29,10 +29,10 @@
       ignored = "!git ls-files -v | grep \'^S\'";
     };
     
-    #signing = {
-      #signByDefault = true;
-      #key = "792460FD4173F480";
-    #};
+    signing = {
+      signByDefault = true;
+      key = "BBBB430347121455";
+    };
     extraConfig = ''
 [core]
 pager="diff-so-fancy | less --tabs=4 -RFX"
