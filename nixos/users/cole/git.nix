@@ -1,7 +1,7 @@
 {
     enable = true;
     userName = "Cole Scott";
-    userEmail = "colescottsf@gmail.com";
+    userEmail = "me@colescott.io";
     
     aliases = {
       unstage = "reset HEAD --";
