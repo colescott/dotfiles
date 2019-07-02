@@ -1,64 +1,56 @@
-pkgs:
+{ pkgs, ... }:
 
 {
-  nixpkgs.config = {
-    allowUnfree = true;
+  users.users.cole = {
+    isNormalUser = true;
+    home = "/home/cole";
+    description = "Cole Scott";
+    extraGroups = [ "wheel" "networkmanager" "vboxusers" "docker" "plugdev" "dialout" "sound" "audio" ];
+    uid = 1000;
+    shell = pkgs.zsh;
+    passwordFile = "/etc/nixos/passwords/cole";
   };
 
-  programs.git = import ./git.nix;
-  programs.neovim = import ./neovim.nix;
-  programs.newsboat = import ./newsboat.nix;
-
-  home.packages = with pkgs; [
-    haskellPackages.xmobar
-    dmenu stalonetray
-    kitty
-  ];
-
-  xsession = {
-    enable = true;
-    windowManager.xmonad = {
-      enable = true;
-      config = ./xmonad.hs;
-      enableContribAndExtras = true;
-      extraPackages = haskellPackages: with haskellPackages; [
-        haskellPackages.xmonad-contrib
-        haskellPackages.xmonad-extras
-      ];
+  home-manager.users.cole = {
+    nixpkgs.config = {
+      allowUnfree = true;
     };
-    initExtra = ''
-      light-locker &
-    '';
-  };
 
-  # compton is used as a window compositor
-  services.compton = {
-    enable = true;
-    fade = true;
-    fadeDelta = 2;
-  };
+    programs.git = import ./git.nix;
+    programs.neovim = import ./neovim.nix;
+    programs.newsboat = import ./newsboat.nix;
+    programs.rofi = import ./rofi.nix;
 
-  services.gpg-agent = {
-    enable = true;
-    defaultCacheTtl = 1800;
-    enableSshSupport = true;
-  };
+    home.packages = with pkgs; [
+      stalonetray
+      kitty
+      pass
+    ];
 
-  # All home config files
-  home.file.".npmrc".source = ./files/npmrc;
-  home.file.".xmobarrc".source = ./files/xmobarrc;
-  home.file.".tmux.conf".source = ./files/tmux.conf;
-  home.file.".stalonetrayrc".source =  ./files/stalontrayrc;
-  home.file.".config/kitty/kitty.conf".source = ./files/kitty.conf;
-  home.file."wallpaper.png".source = ./files/wallpaper.png;
+    services.gpg-agent = {
+      enable = true;
+      defaultCacheTtl = 1800;
+      enableSshSupport = true;
+    };
 
-  # Bin dir
-  home.file.".local/bin/chrome" = {
-    text = "google-chrome-stable";
-    executable = true;
-  };
-  home.file.".local/bin/volume.sh" = {
-    source = ./files/volume.sh;
-    executable = true;
+    # All home config files
+    home.file.".config/sway/config".text = pkgs.callPackage ./sway.nix {};
+    home.file.".npmrc".source = ./files/npmrc;
+    home.file.".xmobarrc".source = ./files/xmobarrc;
+    home.file.".tmux.conf".source = ./files/tmux.conf;
+    home.file.".stalonetrayrc".source =  ./files/stalontrayrc;
+    home.file.".config/kitty/kitty.conf".source = ./files/kitty.conf;
+    home.file."wallpaper.png".source = ./files/wallpaper.png;
+    home.file.".gnupg/gpg.conf".source = ./files/gpg.conf;
+
+    # Bin dir
+    home.file.".local/bin/chrome" = {
+      text = "google-chrome-stable";
+      executable = true;
+    };
+    home.file.".local/bin/volume.sh" = {
+      source = ./files/volume.sh;
+      executable = true;
+    };
   };
 }

@@ -1,41 +1,49 @@
 { config, pkgs, ... }:
 
+let
+  unstableTarball =
+    fetchTarball
+      https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz;
+  home-manager = builtins.fetchGit {
+        url = https://github.com/rycee/home-manager;
+        ref = "release-19.03";
+      };
+  credentials = import ./credentials.nix;
+in
+
 {
   imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-
-      # Current machine
+    [ # Current machine
       ./machine-configuration.nix
-
-      # Udev rules
       ./udev.nix
 
-      # Docker virtualisation
+      "${home-manager}/nixos"
+      ./users
+
       ./docker.nix
+      ./sway.nix
 
-      # Zsh config
       ./zsh.nix
-
-      # Home manager
-      "${builtins.fetchGit {
-        url = https://github.com/rycee/home-manager;
-        ref = "release-18.03";
-      }}/nixos"
-
-      # Zimfw module
       ./modules/zimfw
 
-      # Users
-      ./users
+      # Features
+      ./features/vpn.nix
+      ./features/yubikey.nix
+      ./fonts.nix
+
+      ./scripts.nix
     ];
 
   # Set time zone to pacific
   time.timeZone = "US/Pacific";
 
   # Default packages
-  nixpkgs.config.allowUnfree = true; # Allows packages with unfree licences
-  nixpkgs.config.packageOverrides = pkgs: {
+  nixpkgs.config = {
+    allowUnfree = true; # Allows packages with unfree licences
+    packageOverrides = pkgs: {
+      unstable = import unstableTarball {
+        config = config.nixpkgs.config;
+      };
       steam = pkgs.steam.override {
         extraPkgs = pkgs: with pkgs; [
           gnome3.gtk
@@ -52,19 +60,21 @@
         ];
       };
     };
+  };
   environment.systemPackages = with pkgs; [
     # GTK
     lxappearance
     breeze-gtk
 
     # Interface
-    compton lightlocker xorg.xbacklight
-    scrot feh
+    feh
+
+    # GPG
+    gnupg
 
     # Command line utils
     git
     xclip xdg_utils
-    alsaUtils # Volume control
     transmission # Torrent client
     unzip wget gnumake
     travis git-hub
@@ -78,9 +88,10 @@
     ntfs3g # Write support for NTFS
 
     # Applications
-    google-chrome slack spotify discord
+    firefox slack spotify discord
     steam xboxdrv # Steam + utils
-    nox nix-index nix-repl # Nix utils
+    nox nix-index # Nix utils
+    pavucontrol
 
     # Programming languages
     gcc clang # C(++)
@@ -88,7 +99,7 @@
     idris # Idris
     go # Go
     nodejs-8_x yarn # Node
-    elmPackages.elm elmPackages.elm-format elmPackages.elm-reactor # Elm
+    elmPackages.elm elmPackages.elm-format # Elm
     python python3 # Pseudocode
 
     uncrustify astyle
@@ -96,15 +107,16 @@
     zathura # PDF Viewer
     gitAndTools.diff-so-fancy
     rustup # Rust version manager
-
-    (callPackage ./programs/franz.nix {})
   ];
 
   # Hardware defaults
   hardware.pulseaudio = {
     enable = true;
     support32Bit = true;
+    # Add bluetooth support
+    package = pkgs.pulseaudioFull;
   };
+  sound.mediaKeys.enable = true;
   hardware.bluetooth.enable = true;
   hardware.opengl.driSupport32Bit = true;
   # hardware.bumblebee.enable = true;
@@ -113,7 +125,7 @@
   networking = {
     networkmanager.enable = true;
     firewall = {
-      enable = false;
+      enable = true;
       allowPing = false;
       allowedTCPPorts = [];
       allowedUDPPorts = [];
@@ -127,65 +139,11 @@
     theme = "tribar";
   };
 
-  # Security
-  security.pam.enableU2F = true;
-  boot.loader.systemd-boot.editor = false;
-
   #
   # Services:
   #
   services = {
-    # Xserver
-    xserver = {
-      enable = true;
-      layout = "us";
-      xkbOptions = "caps:swapescape, eurosign:e";
-      # videoDrivers = [ "nvidia" "intel" ];
-
-      windowManager.xmonad = {
-        enable = true;
-        enableContribAndExtras = true;
-        extraPackages = hp: with hp; [
-          xmonad-contrib
-          xmonad-extras
-        ];
-      };
-
-      displayManager.lightdm = {
-        enable = true;
-        background = "/etc/nixos/users/cole/wallpaper.png";
-        greeters.gtk.enable = true;
-      };
-
-      windowManager.default = "xmonad";
-      desktopManager = {
-        default = "none";
-        xterm.enable = false;
-      };
-
-      dpi = 96;
-      xrandrHeads = [
-        {
-          output = "eDP1";
-          primary = true;
-          monitorConfig = ''
-DisplaySize 1920 1080
-          '';
-        }
-        {
-          output = "DP2-2";
-          monitorConfig = ''
-DisplaySize 1920 1080
-Option "RightOf" "eDP1"
-          '';
-        }
-      ];
-    };
-
     postgresql.enable = true;
-
-    # Smart card util
-    pcscd.enable = true;
 
     # Battery/power utils
     tlp.enable = true;
@@ -219,47 +177,20 @@ Option "RightOf" "eDP1"
       enable = true;
       nssmdns = true;
     };
-
-    hoogle = {
-      enable = true;
-      port = 1248;
-      packages = hp: with hp; [
-        text lens base
-        aeson servant servant-server
-        protolude
-        persistent persistent-template
-        containers mtl transformers
-        xmonad xmonad-contrib xmonad-extras
-      ];
-    };
   };
 
   # Set default programs
   programs.vim.defaultEditor = true;
   programs.zsh.enable = true;
 
-  # Install pretty fonts
-  fonts = {
-    enableCoreFonts = true;
-    enableFontDir = true;
-    enableGhostscriptFonts = true;
-
-    fontconfig = {
-      defaultFonts = {
-        monospace = [ "Fira Code Light" ];
-      };
+  features = {
+    vpn = {
+      enable = true;
+      credentials = credentials.vpn;
     };
-    fonts = with pkgs; [
-      powerline-fonts
-      source-code-pro
-      fira
-      fira-code
-      fira-code-symbols
-      fira-mono
-      emojione
-    ];
+    yubikey.enable = true;
   };
 
   system.copySystemConfiguration = true;
-  system.stateVersion = "18.03";
+  system.stateVersion = "19.03";
 }

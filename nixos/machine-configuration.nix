@@ -5,7 +5,7 @@
     # Desktop
     #./machines/desktop.nix
 
-    # Laptop
-    #./machines/laptop.nix
+    # Thinkpad
+    ./machines/thinkpadp51s.nix
   ];
 }

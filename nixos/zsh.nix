@@ -14,6 +14,12 @@
       EDITOR="nvim";
       DEFAULT_USER="$USER";
       PATH=$HOME/.npm-packages/bin:$PATH:$HOME/.local/bin:$HOME/go/bin
+
+      # Setup gpg agent
+      export GPG_TTY="$(tty)"
+      export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+
+      export PASSWORD_STORE_GPG_OPTS='--no-throw-keyids'
     '';
     shellAliases = {
       mnt = "udisksctl mount -b";

@@ -97,6 +97,9 @@ set nofoldenable
 set ai
 set si
 
+" Clear highlights
+nnoremap <Leader>c :noh<cr>
+
 " Allow ommiting C-W for moving between buffers
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
