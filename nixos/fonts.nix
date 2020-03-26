@@ -12,12 +12,12 @@
       };
     };
     fonts = with pkgs; [
-      powerline-fonts
-      source-code-pro
       fira
       fira-code
       fira-code-symbols
       fira-mono
+
+      nerdfonts
       emojione
     ];
   };

@@ -6,6 +6,9 @@
     #./machines/desktop.nix
 
     # Thinkpad
-    ./machines/thinkpadp51s.nix
+    # ./machines/thinkpadp51s.nix
+    
+    # Thinkpad X1
+    ./machines/thinkpadX1.nix
   ];
 }

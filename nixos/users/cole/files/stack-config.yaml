@@ -1,0 +1,20 @@
+templates:
+  params:
+    author-email: me@colescott.io
+    author-name: Cole Scott
+    category: web
+    github-username: colescott
+    copyright: GPL
+  scm-init: git
+
+save-hackage-creds: false
+default-template: simple-hpack
+
+docker:
+  auto-pull: true
+
+nix:
+  enable: true
+  packages:
+    - zlib
+    - postgresql

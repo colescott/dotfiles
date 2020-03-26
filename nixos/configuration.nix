@@ -6,7 +6,7 @@ let
       https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz;
   home-manager = builtins.fetchGit {
         url = https://github.com/rycee/home-manager;
-        ref = "release-19.03";
+        ref = "release-19.09";
       };
   credentials = import ./credentials.nix;
 in
@@ -21,6 +21,7 @@ in
       ./users
 
       ./docker.nix
+      ./lxd.nix
       ./sway.nix
 
       ./zsh.nix
@@ -32,10 +33,14 @@ in
       ./fonts.nix
 
       ./scripts.nix
+
+      # Cachix
+      /etc/nixos/cachix.nix
     ];
 
   # Set time zone to pacific
   time.timeZone = "US/Pacific";
+  time.hardwareClockInLocalTime = true;
 
   # Default packages
   nixpkgs.config = {
@@ -62,73 +67,27 @@ in
     };
   };
   environment.systemPackages = with pkgs; [
-    # GTK
-    lxappearance
-    breeze-gtk
-
-    # Interface
-    feh
-
-    # GPG
-    gnupg
-
-    # Command line utils
-    git
-    xclip xdg_utils
-    transmission # Torrent client
-    unzip wget gnumake
-    travis git-hub
-    vim tmux htop
-    cmus ranger newsboat
-
-    # Libraries and utils
-    jdk
-    libelf
-    xorg.libX11 xorg.libxcb
-    ntfs3g # Write support for NTFS
-
-    # Applications
-    firefox slack spotify discord
-    steam xboxdrv # Steam + utils
-    nox nix-index # Nix utils
-    pavucontrol
-
-    # Programming languages
-    gcc clang # C(++)
-    stack ghc # Haskell
-    idris # Idris
-    go # Go
-    nodejs-8_x yarn # Node
-    elmPackages.elm elmPackages.elm-format # Elm
-    python python3 # Pseudocode
-
-    uncrustify astyle
-
-    zathura # PDF Viewer
-    gitAndTools.diff-so-fancy
-    rustup # Rust version manager
+    git gnumake curl gnupg cachix
   ];
 
   # Hardware defaults
   hardware.pulseaudio = {
     enable = true;
     support32Bit = true;
-    # Add bluetooth support
-    package = pkgs.pulseaudioFull;
+    package = pkgs.pulseaudioFull; # Add bluetooth support
   };
   sound.mediaKeys.enable = true;
   hardware.bluetooth.enable = true;
   hardware.opengl.driSupport32Bit = true;
-  # hardware.bumblebee.enable = true;
 
   # Enable network manager
   networking = {
     networkmanager.enable = true;
     firewall = {
       enable = true;
-      allowPing = false;
-      allowedTCPPorts = [];
-      allowedUDPPorts = [];
+      allowPing = true;
+      allowedTCPPorts = [ ];
+      allowedUDPPorts = [ 5353 ];
     };
     nameservers = [ "1.1.1.1" "1.0.0.1" ];
   };
@@ -136,8 +95,10 @@ in
   # pretty boot logo
   boot.plymouth = {
     enable = true;
-    theme = "tribar";
+    theme = "breeze";
   };
+  # Allow for exFAT
+  boot.extraModulePackages = [ config.boot.kernelPackages.exfat-nofuse ];
 
   #
   # Services:
@@ -149,10 +110,12 @@ in
     tlp.enable = true;
     acpid.enable = true;
 
+    pcscd.enable = true;
+
     # Enable CUPS
     printing = {
       enable = true;
-      drivers = with pkgs; [ gutenprint ];
+      drivers = with pkgs; [ gutenprint hplipWithPlugin ];
     };
 
     # Manual
@@ -168,16 +131,20 @@ in
     # Redshift for my eyes
     redshift = {
       enable = true;
-      latitude = "37.774929";
-      longitude = "-122.419416";
     };
 
     # Avahi for mDNS
     avahi = {
       enable = true;
       nssmdns = true;
+      publish = {
+        enable = true;
+        domain = true;
+        addresses = true;
+      };
     };
   };
+  location.provider = "geoclue2";
 
   # Set default programs
   programs.vim.defaultEditor = true;

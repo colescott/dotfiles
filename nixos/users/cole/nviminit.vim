@@ -19,16 +19,54 @@ hi ALEWarningSign ctermfg=3 guifg=Black guibg=Yellow
 " Linters for languages
 let g:ale_linters = {
       \   'javascript': ['eslint'],
-      \   'haskell': ['stack-ghc-mod', 'hlint'],
+      \   'haskell': ['hlint'],
       \   'go': ['gofmt', 'go build', 'golint'],
       \   'rust': ['rls']
       \}
 let g:ale_fixers = {
       \   'javascript': ['prettier'],
+      \   'haskell': ['hfmt'],
       \   'cpp': ['clang-format'],
       \   'rust': ['rustfmt'],
       \   'typescript': ['prettier']
       \}
+
+" CoC
+
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Use `:Format` to format current buffer
+command! -nargs=0 Format :call CocAction('format')
+
+" Using CocList
+" Show all diagnostics
+nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions
+nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" Show commands
+nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document
+nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols
+nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list
+nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
 " Airline
 let g:airline_powerline_fonts = 1
@@ -98,7 +136,7 @@ set ai
 set si
 
 " Clear highlights
-nnoremap <Leader>c :noh<cr>
+nnoremap <Backspace>c :noh<cr>
 
 " Allow ommiting C-W for moving between buffers
 nnoremap <C-J> <C-W><C-J>

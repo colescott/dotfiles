@@ -3,7 +3,7 @@
 ''
 ### Variables
 #
-set $mod Mod1
+set $mod Mod4
 set $left h
 set $down j
 set $up k
@@ -16,7 +16,6 @@ set $pass ${pkgs.rofi-pass}/bin/rofi-pass
 #
 # Default wallpaper
 output * bg ~/wallpaper.png fill
-#
 
 ### Auto sleep
 #
@@ -30,7 +29,7 @@ exec ${pkgs.swayidle}/bin/swayidle -w \
 #
 input "1:1:AT_Translated_Set_2_keyboard" {
     xkb_layout us
-    xkb_options caps:swapescape
+    xkb_options ctrl:nocaps
 }
 
 input "2:7:SynPS/2_Synaptics_TouchPad" {
@@ -63,13 +62,19 @@ input "2:7:SynPS/2_Synaptics_TouchPad" {
     bindsym $mod+Shift+q reload
 
     # exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+    bindsym $mod+Shift+e exec swaynag -t warning -m 'Are you sure?' -b 'Yes' 'swaymsg exit'
 
     # volume controls (special keys on keyboard)
-    bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5%
-    bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5%
-    bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle
-    bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute 1 toggle
+    bindsym XF86AudioRaiseVolume exec --no-startup-id ${pkgs.alsaUtils}/bin/amixer set 'Master' 5%+
+    bindsym XF86AudioLowerVolume exec --no-startup-id ${pkgs.alsaUtils}/bin/amixer set 'Master' 5%-
+    bindsym XF86AudioMute exec --no-startup-id ${pkgs.alsaUtils}/bin/amixer set 'Master' toggle
+    bindsym XF86AudioMicMute exec --no-startup-id ${pkgs.alsaUtils}/bin/amixer set 'Capture' toggle
+
+    bindsym XF86MonBrightnessUp exec --no-startup-id ${pkgs.light}/bin/light -A 10
+    bindsym XF86MonBrightnessDown exec --no-startup-id ${pkgs.light}/bin/light -U 10
+
+    bindsym --release Print exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)" ~/Screenshots/$(date +'%Y-%m-%d-%H%M%S.png')
+    bindsym --release Shift+Print exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.wl-clipboard}/bin/wl-copy
 #
 # Moving around:
 #
@@ -184,10 +189,19 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 #
+# Borders
+#
+default_border none
+
+#
 # Status Bar:
 #
 bar {
     swaybar_command ${pkgs.unstable.waybar}/bin/waybar
     position top
 }
+
+# Fix bug with DPI breaking after external monitor is disconnected
+# See swaywm/wlroots#1119
+exec xrdb -load ~/.Xresources
 ''

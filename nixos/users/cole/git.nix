@@ -1,3 +1,5 @@
+{ pkgs, ... }:
+
 {
     enable = true;
     userName = "Cole Scott";
@@ -31,11 +33,11 @@
     
     signing = {
       signByDefault = true;
-      key = "BBBB430347121455";
+      key = "C1E8E9F35739CC98";
     };
     extraConfig = ''
 [core]
-pager="diff-so-fancy | less --tabs=4 -RFX"
+pager="${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | less --tabs=4 -RFX"
 
 [color]
 ui=true

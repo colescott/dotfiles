@@ -8,4 +8,5 @@
       unstable.waybar
     ];
   };
+  programs.light.enable = true;
 }

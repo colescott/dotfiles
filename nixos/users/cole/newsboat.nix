@@ -1,3 +1,5 @@
+{ ... }:
+
 {
   enable = true;
   autoReload = true;
