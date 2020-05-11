@@ -147,7 +147,7 @@ in
   location.provider = "geoclue2";
 
   # Set default programs
-  programs.vim.defaultEditor = true;
+  programs.emacs.defaultEditor = true;
   programs.zsh.enable = true;
 
   features = {
