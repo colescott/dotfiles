@@ -7,7 +7,7 @@ let
 in
 {
   options.features.vpn = {
-    enable = mkEnableOption "config for vpn";
+    enable = mkEnableOption "Config for vpn";
     credentials = mkOption {
       type = types.submodule {
         options = {
@@ -57,12 +57,12 @@ in
       pia = {
         config = ''
           cd /home/cole/dotfiles/vpn
-	      auth-nocache
-	      config US\ Silicon\ Valley.ovpn
+	        auth-nocache
+	        config US\ Silicon\ Valley.ovpn
 	     '';
 	     autoStart = true;
 	     authUserPass = {
-               username = cfg.credentials.username;
+         username = cfg.credentials.username;
 	       password = cfg.credentials.password;
 	     };
       };

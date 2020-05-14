@@ -6,12 +6,14 @@
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.kernelPackages = pkgs.linuxPackages_latest; # pkgs.linuxPackages_5_3;
+  boot.kernelModules = [ "kvm-intel" "snd_sof" ];
+
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   hardware.cpu.intel.updateMicrocode = true; # Since we seem to need them so often
 
   hardware.enableRedistributableFirmware = true; # Needed for iwlwifi
+  # hardware.firmware = [ pkgs.unstable.sof-firmware ];
 
   boot.initrd.luks.devices."enc-boot" = {
     device = "/dev/disk/by-uuid/1cb10647-9eec-462d-ba01-f5325b779837";
@@ -62,10 +64,27 @@
     };
   };
 
+  boot.blacklistedKernelModules = ["snd_hda_intel" "snd_soc_skl"];
+
+  hardware.pulseaudio.extraConfig = ''
+load-module module-alsa-sink device=hw:0,0 channels=4
+load-module module-alsa-source device=hw:0,7 channels=4
+'';
+
   # Fingerprints
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = true;
   services.fwupd.enable = true;
+
+  # Power
+  services.tlp = {
+    enable = true;
+    extraConfig = ''
+USB_BLACKLIST="feed:1307"
+      '';
+  };
+  powerManagement.enable = true;
+  powerManagement.powertop.enable = true;
 
   nix.maxJobs = lib.mkDefault 12;
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";

@@ -2,7 +2,6 @@
 ;;;
 ;;; Set font to fira code and enable fira-code-mode for ligature support
 
-
 ;; Set font to fira code
 (set-frame-font "Fira Code 11" nil t)
 

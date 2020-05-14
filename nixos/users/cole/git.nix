@@ -35,25 +35,104 @@
       signByDefault = true;
       key = "C1E8E9F35739CC98";
     };
-    extraConfig = ''
-[core]
-pager="${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | less --tabs=4 -RFX"
+    
+    extraConfig = {
+      core = {
+        editor = "nvim";
+        whitespace = "blank-at-eol,blank-at-eof,space-before-tab";
+        pager = ''
+          ${pkgs.unstable.gitAndTools.delta}/bin/delta --plus-color="#012800" --minus-color="#340001" --theme=none --hunk-style=plain'';
+      };
+      status = {
+        showStatus = true;
+        submoduleSummary = true;
+      };
+      interactive = {
+        diffFilter =
+          "${pkgs.unstable.gitAndTools.delta}/bin/delta --color-only --theme=none";
+      };
+      push = { default = "current"; };
+    };
+    
+    ignores = [
+        # Virtualenv
+        # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
+        ".Python"
+        "[Bb]in"
+        "[Ii]nclude"
+        "[Ll]ib"
+        "[Ll]ib64"
+        "[Ll]ocal"
+        "[Ss]cripts"
+        "pyvenv.cfg"
+        ".venv"
+        "pip-selfcheck.json"
 
-[color]
-ui=true
-      
-[color "diff-highlight"]
-oldNormal=red bold
-oldHighlight=red bold 52
-newNormal=green bold
-newHighlight=green bold 22
+        # Vim
+        # Swap
+        "[._]*.s[a-v][a-z]"
+        "!*.svg"  # comment out if you don't need vector files
+        "[._]*.sw[a-p]"
+        "[._]s[a-rt-v][a-z]"
+        "[._]ss[a-gi-z]"
+        "[._]sw[a-p]"
 
-[color "diff"]
-meta=yellow
-frag=magenta bold
-commit="yellow bold"
-old="red bold"
-new="green bold"
-whitespace="red reverse"
-'';
-  }
+        # Session
+        "Session.vim"
+        "Sessionx.vim"
+
+        # Temporary
+        ".netrwhist"
+        "*~"
+        # Auto-generated tag files
+        "tags"
+        # Persistent undo
+        "[._]*.un~"
+
+        # Emacs
+        "*~"
+        "\\#*\\#"
+        "/.emacs.desktop"
+        "/.emacs.desktop.lock"
+        "*.elc"
+        "auto-save-list"
+        "tramp"
+        ".\\#*"
+        
+        # Org-mode
+        ".org-id-locations"
+        "*_archive"
+        
+        # flymake-mode
+        "*_flymake.*"
+        
+        # eshell files
+        "/eshell/history"
+        "/eshell/lastdir"
+        
+        # elpa packages
+        "/elpa/"
+        
+        # reftex files
+        "*.rel"
+        
+        # AUCTeX auto folder
+        "/auto/"
+        
+        # cask packages
+        ".cask/"
+        "dist/"
+        
+        # Flycheck
+        "flycheck_*.el"
+        
+        # projectiles files
+        ".projectile"
+        
+        # directory configuration
+        ".dir-locals.el"
+        
+        # network security
+        "/network-security.data"
+    ];
+}

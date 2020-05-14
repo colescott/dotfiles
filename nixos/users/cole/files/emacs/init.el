@@ -1,11 +1,18 @@
+;;;; init.el
+;;;;
+;;;; Author: Cole Scott
+
+;; Push the current directory onto the load path
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+
 ;; Enable use-package
 (eval-when-compile
   (require 'use-package))
 
 (package-initialize)
 
-(load "~/.emacs.d/fira-code.el")
-(load "~/.emacs.d/irony.el")
+(require 'fira-code-mode)
+(require 'setup-c)
 
 (use-package nix-mode
   :mode "\\.nix\\'"
@@ -33,8 +40,7 @@
     (define-key company-active-map (kbd "C-p") (lambda () (interactive) (company-complete-common-or-cycle -1)))))
 
 (with-eval-after-load 'flycheck
-  (global-flycheck-mode)
-  (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+  (global-flycheck-mode))
 
 ;; Set backups folder
 (setq backup-directory-alist
@@ -65,13 +71,14 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Org mode
-(require 'org)
-(define-key global-map "\C-cl" 'org-store-link)
-(define-key global-map "\C-ca" 'org-agenda)
-(setq org-log-done 'time)
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((gnuplot . t)))
+(use-package org
+  :config
+  (define-key global-map "\C-cl" 'org-store-link)
+  (define-key global-map "\C-ca" 'org-agenda)
+  (setq org-log-done 'time)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((gnuplot . t))))
 
 ;; Helm mode
 (use-package helm
@@ -103,3 +110,9 @@
     (setq wg-session-file "~/.emacs.d/.emacs_workgroups")
     (setq wg-mode-line-display-on t)
    (workgroups-mode 1)))
+
+(use-package slime
+  :config
+  (progn
+    (load (expand-file-name "~/quicklisp/slime-helper.el"))
+    (setq inferior-lisp-program "sbcl")))

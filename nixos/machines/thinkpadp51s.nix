@@ -79,7 +79,7 @@
 
   # Power settings
   powerManagement = {
-    powertop.enable = true;
+    #powertop.enable = true;
   };
   services.thinkfan = {
     enable = true;

@@ -16,6 +16,8 @@ set $pass ${pkgs.rofi-pass}/bin/rofi-pass
 #
 # Default wallpaper
 output * bg ~/wallpaper.png fill
+output eDP-1 pos 1920 0 res 1920x1080 scale 1
+output DP-2 pos 0 0 res 1920x1080 scale 1
 
 ### Auto sleep
 #
@@ -197,7 +199,7 @@ default_border none
 # Status Bar:
 #
 bar {
-    swaybar_command ${pkgs.unstable.waybar}/bin/waybar
+    swaybar_command ${pkgs.waybar}/bin/waybar
     position top
 }
 

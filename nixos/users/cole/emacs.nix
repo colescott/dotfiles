@@ -1,5 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
+let
+  liblapack = pkgs.liblapack.override { shared = true; };
+in
 {
   enable = true;
   extraPackages = epkgs: [
@@ -18,8 +21,8 @@
     epkgs.markdown-mode # Markdown
 
     # Irony
-    epkgs.irony epkgs.irony-eldoc epkgs.company-irony epkgs.flycheck-irony
-    epkgs.company-irony-c-headers epkgs.clang-format
+    #epkgs.irony epkgs.irony-eldoc epkgs.company-irony epkgs.flycheck-irony
+    #epkgs.company-irony-c-headers epkgs.clang-format
 
     # Company
     epkgs.company
@@ -31,12 +34,38 @@
     # Flycheck
     epkgs.flycheck
 
+    # LSP
+    epkgs.lsp-mode
+    epkgs.lsp-ui
+    epkgs.helm-lsp
+
     # Org mode
     #epkgs.org-mode
     #epkgs.org-babel
     #epkgs.org-babel-gnuplot
     #epkgs.gnuplot
     #pkgs.gnuplot
-   ];
+
+    pkgs.libffi
+    pkgs.blas
+    pkgs.liblapack
+    pkgs.gfortran
+    (lib.getLib pkgs.gfortran.cc)
+  ];
+  /*
+  overrides = self: super: {
+    emacs = self.emacsWithPackages (
+      (with pkgs; [
+        libffi
+        blas
+        liblapack
+        gfortran
+        (stdenv.lib.getLib gfortran.cc)
+
+        cscope
+      ])
+    );
+    };
+*/
 }
 

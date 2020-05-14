@@ -1,8 +1,18 @@
-params@{ pkgs, ... }:
+params@{ pkgs, config, lib, ... }:
 let
   all-hies = import (fetchTarball "https://github.com/infinisil/all-hies/tarball/master") {};
+  
+  # XXX: This is a hack to get callPackage to import the current scope
+  callPackageWith = autoArgs: fn: args:
+  let
+    f = if lib.isFunction fn then fn else import fn;
+    auto = builtins.intersectAttrs (lib.functionArgs f) autoArgs;
+  in f (auto // args);
+  callPackage = callPackageWith params;
+
+  scripts = pkgs.callPackage ./scripts.nix {};
 in
-{
+rec {
   users.users.cole = {
     isNormalUser = true;
     home = "/home/cole";
@@ -30,22 +40,27 @@ in
       };
     };
 
-    # TODO: Figure this one out
-    programs.git = import ./git.nix params;
-    programs.neovim = import ./neovim.nix params;
-    programs.newsboat = import ./newsboat.nix params; 
-    programs.rofi = import ./rofi.nix params;
-    # programs.firefox = import ./firefox.nix params;
+    programs = {
+      git = callPackage ./git.nix {};
+      neovim = callPackage ./neovim.nix {};
+      newsboat = callPackage ./newsboat.nix {}; 
+      rofi = callPackageWith pkgs ./rofi.nix {};
+      # firefox = callPackage ./firefox.nix {};
 
-    # Emacs
-    programs.emacs = import ./emacs.nix params;
+      # Emacs
+      emacs = callPackage ./emacs.nix {};
+      zsh = callPackage ./zsh.nix {};
+
+      mako.enable = true;
+    };
     services.emacs.enable = true;
 
     home.packages = with pkgs; [
       pass
       qemu
+      libnotify
 
-      gnuplot # For emacs org-plot
+      ripgrep
 
       # GTK
       lxappearance
@@ -99,10 +114,17 @@ in
     # Fonts
     # fonts.fontconfig.enable = true;
 
+    services.blueman-applet.enable = true;
+
     services.gpg-agent = {
       enable = true;
       defaultCacheTtl = 1800;
       enableSshSupport = true;
+      pinentryFlavor = "gtk2";
+    };
+
+    xresources.properties = {
+      "Xft.dpi" = 96; # The ideal dpi
     };
 
     # All home config files
@@ -112,15 +134,15 @@ in
     home.file.".npmrc".source = ./files/npmrc;
     home.file.".xmobarrc".source = ./files/xmobarrc;
     home.file.".tmux.conf".source = ./files/tmux.conf;
-    home.file.".zshrc".source = ./files/zshrc;
     home.file.".stalonetrayrc".source =  ./files/stalontrayrc;
     home.file.".config/kitty/kitty.conf".source = ./files/kitty.conf;
     home.file."wallpaper.png".source = ./files/wallpaper.png;
     home.file.".gnupg/gpg.conf".source = ./files/gpg.conf;
     home.file.".stack/config.yaml".source = ./files/stack-config.yaml;
-    home.file.".emacs.d/init.el".source = ./files/emacs/init.el;
-    home.file.".emacs.d/irony.el".source = ./files/emacs/irony.el;
-    home.file.".emacs.d/fira-code.el".source = ./files/emacs/fira-code.el;
+    home.file.".emacs.d" = {
+      source = ./files/emacs;
+      recursive = true;
+    };
     home.file.".clang_complete".text = pkgs.callPackage ./clang-complete.nix {};
   };
 }

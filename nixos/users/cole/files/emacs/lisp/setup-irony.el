@@ -1,4 +1,4 @@
-;;; irony.el
+;;; setup-irony.el
 ;;;
 ;;; Irony config for emacs
 
@@ -11,12 +11,19 @@
          ("\\.h\\'"   . c-mode))
   :config
 
+  (setq irony-additional-clang-options
+        (append '("-std=c++17") irony-additional-clang-options))
+  (setq irony-additional-clang-options
+        (append '("-I" "") irony-additional-clang-options))
+  (setq irony-server-install-prefix "/run/current-system/sw/")
+
   (defun my-irony-mode-hook ()
     (define-key irony-mode-map [remap completion-at-point]
       'irony-completion-at-point-async)
     (define-key irony-mode-map [remap complete-symbol]
       'irony-completion-at-point-async)
     (irony-cdb-autosetup-compile-options)
+    (irony-eldoc)
     (company-mode))
   (add-hook 'irony-mode-hook 'my-irony-mode-hook)
 
@@ -36,8 +43,10 @@
   (use-package clang-format
     :ensure t
     :config
-    (global-set-key [C-M-tab] 'clang-format-region)))
+    (global-set-key [C-M-tab] 'clang-format-region))
 
-(add-hook 'c++-mode-hook 'irony-mode)
-(add-hook 'c-mode-hook 'irony-mode)
-(add-hook 'objc-mode-hook 'irony-mode)
+  (add-hook 'c++-mode-hook 'irony-mode)
+  (add-hook 'c-mode-hook 'irony-mode)
+  (add-hook 'objc-mode-hook 'irony-mode))
+
+(provide 'setup-irony)

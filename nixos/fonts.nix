@@ -2,7 +2,6 @@
 
 {
   fonts = {
-    enableCoreFonts = true;
     enableFontDir = true;
     enableGhostscriptFonts = true;
 
@@ -12,6 +11,8 @@
       };
     };
     fonts = with pkgs; [
+      corefonts
+      
       fira
       fira-code
       fira-code-symbols
