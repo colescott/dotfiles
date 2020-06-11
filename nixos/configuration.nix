@@ -80,6 +80,11 @@ in
   hardware.pulseaudio = {
     enable = true;
     support32Bit = true;
+    daemon.config = {
+      default-sample-rate = 48000;
+      alternate-sample-rate = 44410;
+      avoid-resampling = true;
+    };
     package = pkgs.pulseaudioFull; # Add bluetooth support
   };
   sound.mediaKeys.enable = true;
