@@ -2,6 +2,12 @@
   :config
   (add-hook 'c++-mode-hook 'lsp)
   (add-hook 'c-mode-hook 'lsp)
+  (add-hook 'nix-mode-hook 'lsp)
+  (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
+                    :major-modes '(nix-mode)
+                    :server-id 'nix))
   :commands lsp)
 
 ;; optionally

@@ -11,8 +11,12 @@
 
 (package-initialize)
 
+;; Fira code
 (require 'fira-code-mode)
+(global-fira-code-mode)
+
 (require 'setup-c)
+(require 'setup-lsp)
 
 (use-package nix-mode
   :mode "\\.nix\\'"
@@ -26,6 +30,11 @@
               (lambda ()
                 (setq show-trailing-whitespace nil
                       truncate-lines t)))))
+
+(use-package smart-mode-line
+  :init (add-hook 'after-init-hook 'sml/setup)
+  :config
+  (setq sml/theme nil))
 
 (use-package solarized-theme
   :config (load-theme 'solarized-dark t))

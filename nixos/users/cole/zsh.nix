@@ -34,9 +34,10 @@
     mnt = "udisksctl mount -b";
     vi = "nvim";
     vim = "nvim";
-    dd = "dd status=progress";
     g = "git";
     git-prune-branches = "git branch --merged master | grep -v \"^[ *]*master$\" | xargs git branch -d";
+    ns = "nix-shell --command zsh";
+    news = "newsboat";
   };
     
   oh-my-zsh = {

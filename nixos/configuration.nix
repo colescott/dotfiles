@@ -1,28 +1,16 @@
 { config, pkgs, ... }:
-
 let
-  unstableTarball =
-    fetchTarball
-      https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz;
-    nixpkgs-master = builtins.fetchGit {
-        name = "nixpkgs-master-sof";
-        url = https://github.com/nixos/nixpkgs;
-        ref = "fe7f770666bbd940b54a7cd6ef366eb6151ef655";
-      };
-  home-manager = builtins.fetchGit {
-        url = https://github.com/rycee/home-manager;
-        ref = "release-20.03";
-      };
+  unstable = import <nixos-unstable> { config = { allowUnfree = true; }; };
   credentials = import ./credentials.nix;
 in
-
 {
   imports =
-    [ # Current machine
+    [
+      # Current machine
       ./machine-configuration.nix
       ./udev.nix
 
-      "${home-manager}/nixos"
+      <home-manager/nixos>
       ./users
 
       ./docker.nix
@@ -33,14 +21,15 @@ in
       ./modules/zimfw
 
       # Features
-      ./features/vpn.nix
+      ./features/mopidy.nix
       ./features/yubikey.nix
-      ./fonts.nix
+      ./features/wireguard.nix
 
+      ./fonts.nix
       ./scripts.nix
 
       # Cachix
-      /etc/nixos/cachix.nix
+      #/etc/nixos/cachix.nix
     ];
 
   # Set time zone to pacific
@@ -50,13 +39,11 @@ in
   # Default packages
   nixpkgs.config = {
     allowUnfree = true; # Allows packages with unfree licences
+    permittedInsecurePackages = [
+      "p7zip-16.02"
+    ];
     packageOverrides = pkgs: {
-      unstable = import unstableTarball {
-        config = config.nixpkgs.config;
-      };
-      master = import nixpkgs-master {
-        config = config.nixpkgs.config;
-      };
+      unstable = unstable;
       steam = pkgs.steam.override {
         extraPkgs = pkgs: with pkgs; [
           gnome3.gtk
@@ -72,10 +59,18 @@ in
           xorg.libxcb
         ];
       };
+      mopidy = unstable.mopidy;
+      mopidy-mpd = unstable.mopidy-mpd;
+      mopidy-spotify = unstable.mopidy-spotify;
+      mopidy-iris = unstable.mopidy-iris;
     };
   };
   environment.systemPackages = with pkgs; [
-    git gnumake curl gnupg cachix
+    git
+    gnumake
+    curl
+    gnupg
+    cachix
   ];
   programs.dconf.enable = true;
 
@@ -87,16 +82,29 @@ in
   };
   sound.mediaKeys.enable = true;
   hardware.bluetooth.enable = true;
-  hardware.opengl.driSupport32Bit = true;
+  hardware.opengl = {
+    enable = true;
+    driSupport32Bit = true;
+     extraPackages = with pkgs; [
+       libGL
+     ];
+     setLdLibraryPath = true;
+  };
 
   # Enable network manager
   networking = {
-    networkmanager = {
+    usePredictableInterfaceNames = false;
+    wireless = {
       enable = true;
+      interfaces = [ "wlan0" ];
+      networks = credentials.wifiNetworks;
+    };
+    networkmanager = {
+      enable = false;
       dns = "none";
     };
     firewall = {
-      enable = true;
+      enable = false;
       allowPing = true;
       allowedTCPPorts = [ ];
       allowedUDPPorts = [ 5353 ];
@@ -186,19 +194,45 @@ in
   programs.zsh.enable = true;
   environment.pathsToLink = [ "/share/zsh" ];
 
+  networking.wireguard.enable = true;
+
   features = {
-    vpn = {
-      enable = true;
-      credentials = credentials.vpn;
-    };
     yubikey.enable = true;
+    mopidy = {
+      enable = true;
+      extensionPackages = [
+        pkgs.mopidy-iris
+      ];
+      mpd = {
+        enable = true;
+      };
+      spotify = {
+        enable = true;
+        credentials = credentials.spotify;
+      };
+      mediaDirs = [{
+        name = "Music";
+        path = "/home/cole/Music";
+      }];
+    };
+    wireguard = {
+      enable = true;
+      wirelessInterface = "wlan0";
+      extraInterfaces = [ "eth0" ];
+    };
   };
 
-  nix.gc = {
-    automatic = true;
-    options = "--delete-older-than 14d";
+  nix = {
+    gc = {
+      automatic = true;
+      options = "--delete-older-than 14d";
+    };
+    extraOptions = ''
+      keep-outputs = true
+      keep-derivations = true
+    '';
   };
 
   system.copySystemConfiguration = true;
-  system.stateVersion = "19.03";
+  system.stateVersion = "20.03";
 }

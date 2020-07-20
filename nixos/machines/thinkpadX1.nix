@@ -4,30 +4,56 @@
   networking.hostId = "68704184";
   networking.hostName = "thonkpod";
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" "snd_sof" ];
-
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
   hardware.cpu.intel.updateMicrocode = true; # Since we seem to need them so often
-
   hardware.enableRedistributableFirmware = true; # Needed for iwlwifi
-  # hardware.firmware = [ pkgs.unstable.sof-firmware ];
 
-  boot.initrd.luks.devices."enc-boot" = {
-    device = "/dev/disk/by-uuid/1cb10647-9eec-462d-ba01-f5325b779837";
-    keyFile = "/keyfile.bin";
-    fallbackToPassword = true;
-  };
+  boot = {
+    kernelModules = [ "kvm-intel" "snd_sof" ];
+    kernelPackages = pkgs.linuxPackages_latest;
+    blacklistedKernelModules = ["snd_hda_intel" "snd_soc_skl"];
 
-  boot.initrd.luks.devices."enc-root" = {
-    device = "/dev/disk/by-uuid/91950a65-a963-4274-8da9-1f2fb57f0834";
-    keyFile = "/keyfile.bin";
-  };
-  boot.initrd.luks.devices."enc-swap" = {
-    device = "/dev/disk/by-uuid/d7ca8fe7-c75a-4f09-a2e9-d856670f82de";
-    keyFile = "/keyfile.bin";
+    loader = {
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/efi";
+      };
+      grub = {
+        enable = true;
+        device = "nodev";
+        efiSupport = true;
+        version = 2;
+        enableCryptodisk = true;
+      };
+    };
+    
+    initrd = {
+      availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
+      kernelModules = [ ];
+
+      #
+      # Encrypted partitions
+      #
+      luks.devices."enc-boot" = {
+        device = "/dev/disk/by-uuid/1cb10647-9eec-462d-ba01-f5325b779837";
+        keyFile = "/keyfile.bin";
+        fallbackToPassword = true;
+      };
+      luks.devices."enc-root" = {
+        device = "/dev/disk/by-uuid/91950a65-a963-4274-8da9-1f2fb57f0834";
+        keyFile = "/keyfile.bin";
+      };
+      luks.devices."enc-swap" = {
+        device = "/dev/disk/by-uuid/d7ca8fe7-c75a-4f09-a2e9-d856670f82de";
+        keyFile = "/keyfile.bin";
+      };
+
+      #
+      # Initrd secrets for decryption
+      #
+      secrets = {
+        "keyfile.bin" = "/etc/secrets/initrd/keyfile.bin";
+      };
+    };
   };
 
   fileSystems."/" =
@@ -49,23 +75,6 @@
     [ { device = "/dev/disk/by-uuid/cb7f09cb-b2fb-49bd-92c5-860856a67e24"; }
     ];
 
-  boot.loader = {
-    efi = {
-      canTouchEfiVariables = true;
-      efiSysMountPoint = "/efi";
-    };
-    grub = {
-      enable = true;
-      device = "nodev";
-      efiSupport = true;
-      version = 2;
-      extraInitrd = "/boot/initrd.keys.gz";
-      enableCryptodisk = true;
-    };
-  };
-
-  boot.blacklistedKernelModules = ["snd_hda_intel" "snd_soc_skl"];
-
   hardware.pulseaudio.extraConfig = ''
 load-module module-alsa-sink device=hw:0,0 channels=4
 load-module module-alsa-source device=hw:0,7 channels=4
@@ -79,12 +88,18 @@ load-module module-alsa-source device=hw:0,7 channels=4
   # Power
   services.tlp = {
     enable = true;
-    extraConfig = ''
-USB_BLACKLIST="feed:1307"
-      '';
   };
   powerManagement.enable = true;
   powerManagement.powertop.enable = true;
+
+  services.thinkfan = {
+    enable = true;
+  };
+
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+  };
 
   nix.maxJobs = lib.mkDefault 12;
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";

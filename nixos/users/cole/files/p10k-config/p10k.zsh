@@ -30,10 +30,10 @@
 
   # The list of segments shown on the left. Fill it with the most important segments.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
-    # os_icon               # os identifier
+    status
+    background_jobs
     dir                     # current directory
     vcs                     # git status
-    # prompt_char           # prompt symbol
   )
 
   # The list of segments shown on the right. Fill it with less important segments.
@@ -41,12 +41,10 @@
   # automatically hidden when the input line reaches it. Right prompt above the
   # last prompt line gets hidden if it would overlap with left prompt.
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
-    #status                  # exit code of the last command
-    background_jobs         # presence of background jobs
     haskell_stack           # haskell version from stack (https://haskellstack.org/)
     context                 # user@hostname
     nix_shell               # nix shell (https://nixos.org/nixos/nix-pills/developing-with-nix-shell.html)
-    vi_mode                 # vi mode (you don't need this if you've enabled prompt_char)
+    vi_mode
     virtualenv
   )
 
@@ -91,8 +89,8 @@
   if [[ $POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_CHAR != ' ' ]]; then
     # The color of the filler. You'll probably want to match the color of POWERLEVEL9K_MULTILINE
     # ornaments defined above.
-    typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_FOREGROUND=242
-    # Start filler from the edge of the screen if there are no left segments on the first line.
+    typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_FOREGROUND=8
+    # Start filler from the edge of the scree n if there are no left segments on the first line.
     typeset -g POWERLEVEL9K_EMPTY_LINE_LEFT_PROMPT_FIRST_SEGMENT_END_SYMBOL='%{%}'
     # End filler on the edge of the screen if there are no right segments on the first line.
     typeset -g POWERLEVEL9K_EMPTY_LINE_RIGHT_PROMPT_FIRST_SEGMENT_START_SYMBOL='%{%}'
@@ -116,36 +114,6 @@
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_LAST_SEGMENT_END_SYMBOL=''
   # Left prompt terminator for lines without any segments.
   typeset -g POWERLEVEL9K_EMPTY_LINE_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=
-
-  #################################[ os_icon: os identifier ]##################################
-  # OS identifier color.
-  typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=232
-  typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=7
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='⭐'
-
-  ################################[ prompt_char: prompt symbol ]################################
-  # Transparent background.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_BACKGROUND=
-  # Green prompt symbol if the last command succeeded.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=76
-  # Red prompt symbol if the last command failed.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=196
-  # Default prompt symbol.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIINS_CONTENT_EXPANSION='❯'
-  # Prompt symbol in command vi mode.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VICMD_CONTENT_EXPANSION='❮'
-  # Prompt symbol in visual vi mode.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIVIS_CONTENT_EXPANSION='Ⅴ'
-  # Prompt symbol in overwrite vi mode.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIOWR_CONTENT_EXPANSION='▶'
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_OVERWRITE_STATE=true
-  # No line terminator if prompt_char is the last segment.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=
-  # No line introducer if prompt_char is the first segment.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=
-  # No surrounding whitespace.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_{LEFT,RIGHT}_WHITESPACE=
 
   ##################################[ dir: current directory ]##################################
   # Current directory background color.
@@ -263,11 +231,11 @@
 
   #####################################[ vcs: git status ]######################################
   # Version control system colors.
-  # typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND=2
-  # typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=3
-  # typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=2
-  # typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=3
-  # typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND=8
+  typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND=2
+  typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=3
+  typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=2
+  typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=3
+  typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND=4
 
   # Branch icon. Set this parameter to '\uF126 ' for the popular Powerline branch icon.
   typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=
@@ -398,14 +366,14 @@
 
   # Status on success. No content, just an icon. No need to show it if prompt_char is enabled as
   # it will signify success by turning green.
-  typeset -g POWERLEVEL9K_STATUS_OK=true
+  typeset -g POWERLEVEL9K_STATUS_OK=false
   typeset -g POWERLEVEL9K_STATUS_OK_VISUAL_IDENTIFIER_EXPANSION='✔'
   # typeset -g POWERLEVEL9K_STATUS_OK_FOREGROUND=2
   # typeset -g POWERLEVEL9K_STATUS_OK_BACKGROUND=0
 
   # Status when some part of a pipe command fails but the overall exit status is zero. It may look
   # like this: 1|0.
-  typeset -g POWERLEVEL9K_STATUS_OK_PIPE=true
+  typeset -g POWERLEVEL9K_STATUS_OK_PIPE=false
   typeset -g POWERLEVEL9K_STATUS_OK_PIPE_VISUAL_IDENTIFIER_EXPANSION='✔'
   # typeset -g POWERLEVEL9K_STATUS_OK_PIPE_FOREGROUND=2
   # typeset -g POWERLEVEL9K_STATUS_OK_PIPE_BACKGROUND=0
@@ -414,23 +382,23 @@
   # it will signify error by turning red.
   typeset -g POWERLEVEL9K_STATUS_ERROR=true
   typeset -g POWERLEVEL9K_STATUS_ERROR_VISUAL_IDENTIFIER_EXPANSION='✘'
-  # typeset -g POWERLEVEL9K_STATUS_ERROR_FOREGROUND=3
-  # typeset -g POWERLEVEL9K_STATUS_ERROR_BACKGROUND=1
+  typeset -g POWERLEVEL9K_STATUS_ERROR_FOREGROUND=1
+  typeset -g POWERLEVEL9K_STATUS_ERROR_BACKGROUND=0
 
   # Status when the last command was terminated by a signal.
-  typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL=true
+  typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL=false
   # Use terse signal names: "INT" instead of "SIGINT(2)".
   typeset -g POWERLEVEL9K_STATUS_VERBOSE_SIGNAME=false
   typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_VISUAL_IDENTIFIER_EXPANSION='✘'
-  # typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_FOREGROUND=3
-  # typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_BACKGROUND=1
+  typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_FOREGROUND=1
+  typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_BACKGROUND=0
 
   # Status when some part of a pipe command fails and the overall exit status is also non-zero.
   # It may look like this: 1|0.
   typeset -g POWERLEVEL9K_STATUS_ERROR_PIPE=true
   typeset -g POWERLEVEL9K_STATUS_ERROR_PIPE_VISUAL_IDENTIFIER_EXPANSION='✘'
-  # typeset -g POWERLEVEL9K_STATUS_ERROR_PIPE_FOREGROUND=3
-  # typeset -g POWERLEVEL9K_STATUS_ERROR_PIPE_BACKGROUND=1
+  typeset -g POWERLEVEL9K_STATUS_ERROR_PIPE_FOREGROUND=1
+  typeset -g POWERLEVEL9K_STATUS_ERROR_PIPE_BACKGROUND=0
 
   ###################[ command_execution_time: duration of the last command ]###################
   # Execution time color.
@@ -449,12 +417,12 @@
 
   #######################[ background_jobs: presence of background jobs ]#######################
   # Background jobs color.
-  # typeset -g POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND=6
-  # typeset -g POWERLEVEL9K_BACKGROUND_JOBS_BACKGROUND=0
+  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND=6
+  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_BACKGROUND=0
   # Don't show the number of background jobs.
   typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VERBOSE=false
   # Custom icon.
-  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VISUAL_IDENTIFIER_EXPANSION='≡'
+  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VISUAL_IDENTIFIER_EXPANSION='⚙'
 
   #######################[ direnv: direnv status (https://direnv.net/) ]########################
   # Direnv color.
@@ -1344,103 +1312,6 @@
   #
   # Note: ${VARIABLE//\%/%%} expands to ${VARIABLE} with all occurences of '%' replaced by '%%'.
   typeset -g POWERLEVEL9K_GOOGLE_APP_CRED_DEFAULT_CONTENT_EXPANSION='${P9K_GOOGLE_APP_CRED_PROJECT_ID//\%/%%}'
-
-  ###############################[ public_ip: public IP address ]###############################
-  # Public IP color.
-  # typeset -g POWERLEVEL9K_PUBLIC_IP_FOREGROUND=7
-  # typeset -g POWERLEVEL9K_PUBLIC_IP_BACKGROUND=0
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_PUBLIC_IP_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
-  ########################[ vpn_ip: virtual private network indicator ]#########################
-  # VPN IP color.
-  # typeset -g POWERLEVEL9K_VPN_IP_FOREGROUND=0
-  # typeset -g POWERLEVEL9K_VPN_IP_BACKGROUND=6
-  # When on VPN, show just an icon without the IP address.
-  # Tip: To display the private IP address when on VPN, remove the next line.
-  typeset -g POWERLEVEL9K_VPN_IP_CONTENT_EXPANSION=
-  # Regular expression for the VPN network interface. Run `ifconfig` or `ip -4 a show` while on VPN
-  # to see the name of the interface.
-  typeset -g POWERLEVEL9K_VPN_IP_INTERFACE='(wg|(.*tun))[0-9]*'
-  # If set to true, show one segment per matching network interface. If set to false, show only
-  # one segment corresponding to the first matching network interface.
-  # Tip: If you set it to true, you'll probably want to unset POWERLEVEL9K_VPN_IP_CONTENT_EXPANSION.
-  typeset -g POWERLEVEL9K_VPN_IP_SHOW_ALL=false
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_VPN_IP_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
-  ###########[ ip: ip address and bandwidth usage for a specified network interface ]###########
-  # IP color.
-  typeset -g POWERLEVEL9K_IP_BACKGROUND=4
-  typeset -g POWERLEVEL9K_IP_FOREGROUND=0
-  # The following parameters are accessible within the expansion:
-  #
-  #   Parameter             | Meaning
-  #   ----------------------+---------------
-  #   P9K_IP_IP         | IP address
-  #   P9K_IP_INTERFACE  | network interface
-  #   P9K_IP_RX_BYTES   | total number of bytes received
-  #   P9K_IP_TX_BYTES   | total number of bytes sent
-  #   P9K_IP_RX_RATE    | receive rate (since last prompt)
-  #   P9K_IP_TX_RATE    | send rate (since last prompt)
-  typeset -g POWERLEVEL9K_IP_CONTENT_EXPANSION='${P9K_IP_RX_RATE:+⇣$P9K_IP_RX_RATE }${P9K_IP_TX_RATE:+⇡$P9K_IP_TX_RATE }$P9K_IP_IP'
-  # Show information for the first network interface whose name matches this regular expression.
-  # Run `ifconfig` or `ip -4 a show` to see the names of all network interfaces.
-  typeset -g POWERLEVEL9K_IP_INTERFACE='e.*'
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_IP_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
-  #########################[ proxy: system-wide http/https/ftp proxy ]##########################
-  # Proxy color.
-  # typeset -g POWERLEVEL9K_PROXY_FOREGROUND=4
-  # typeset -g POWERLEVEL9K_PROXY_BACKGROUND=0
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_PROXY_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
-  ################################[ battery: internal battery ]#################################
-  # Show battery in red when it's below this level and not connected to power supply.
-  typeset -g POWERLEVEL9K_BATTERY_LOW_THRESHOLD=20
-  typeset -g POWERLEVEL9K_BATTERY_LOW_FOREGROUND=1
-  # Show battery in green when it's charging or fully charged.
-  typeset -g POWERLEVEL9K_BATTERY_{CHARGING,CHARGED}_FOREGROUND=2
-  # Show battery in yellow when it's discharging.
-  typeset -g POWERLEVEL9K_BATTERY_DISCONNECTED_FOREGROUND=3
-  # Battery pictograms going from low to high level of charge.
-  typeset -g POWERLEVEL9K_BATTERY_STAGES=('%K{232}▁' '%K{232}▂' '%K{232}▃' '%K{232}▄' '%K{232}▅' '%K{232}▆' '%K{232}▇' '%K{232}█')
-  # Don't show the remaining time to charge/discharge.
-  typeset -g POWERLEVEL9K_BATTERY_VERBOSE=false
-  # typeset -g POWERLEVEL9K_BATTERY_BACKGROUND=0
-
-  #####################################[ wifi: wifi speed ]#####################################
-  # WiFi color.
-  # typeset -g POWERLEVEL9K_WIFI_FOREGROUND=0
-  # typeset -g POWERLEVEL9K_WIFI_BACKGROUND=4
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_WIFI_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
-  # Use different colors and icons depending on signal strength ($P9K_WIFI_BARS).
-  #
-  #   # Wifi colors and icons for different signal strength levels (low to high).
-  #   typeset -g my_wifi_fg=(0 0 0 0 0)                                # <-- change these values
-  #   typeset -g my_wifi_icon=('WiFi' 'WiFi' 'WiFi' 'WiFi' 'WiFi')     # <-- change these values
-  #
-  #   typeset -g POWERLEVEL9K_WIFI_CONTENT_EXPANSION='%F{${my_wifi_fg[P9K_WIFI_BARS+1]}}$P9K_WIFI_LAST_TX_RATE Mbps'
-  #   typeset -g POWERLEVEL9K_WIFI_VISUAL_IDENTIFIER_EXPANSION='%F{${my_wifi_fg[P9K_WIFI_BARS+1]}}${my_wifi_icon[P9K_WIFI_BARS+1]}'
-  #
-  # The following parameters are accessible within the expansions:
-  #
-  #   Parameter             | Meaning
-  #   ----------------------+---------------
-  #   P9K_WIFI_SSID         | service set identifier, a.k.a. network name
-  #   P9K_WIFI_LINK_AUTH    | authentication protocol such as "wpa2-psk" or "none"
-  #   P9K_WIFI_LAST_TX_RATE | wireless transmit rate in megabits per second
-  #   P9K_WIFI_RSSI         | signal strength in dBm, from -120 to 0
-  #   P9K_WIFI_NOISE        | noise in dBm, from -120 to 0
-  #   P9K_WIFI_BARS         | signal strength in bars, from 0 to 4 (derived from P9K_WIFI_RSSI and P9K_WIFI_NOISE)
-  #
-  # All parameters except P9K_WIFI_BARS are extracted from the output of the following command:
-  #
-  #   /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I
 
   ####################################[ time: current time ]####################################
   # Current time color.

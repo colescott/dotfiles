@@ -10,6 +10,7 @@ in
     epkgs.solarized-theme
     epkgs.workgroups2
     epkgs.use-package
+    epkgs.smart-mode-line
 
     epkgs.multi-term
 
@@ -51,6 +52,9 @@ in
     pkgs.liblapack
     pkgs.gfortran
     (lib.getLib pkgs.gfortran.cc)
+
+    pkgs.nixpkgs-fmt
+    #pkgs.nur.repos.mic92.rnix-lsp-unstable
   ];
   /*
   overrides = self: super: {

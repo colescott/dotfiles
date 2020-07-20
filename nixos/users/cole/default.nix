@@ -34,9 +34,14 @@ rec {
     nixpkgs.config = {
       allowUnfree = true;
       packageOverrides = pkgs: {
-        nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+        /*
+        nur = import (builtins.fetchTarball {
+          url = "https://github.com/nix-community/NUR/archive/master.tar.gz";
+          sha256 = "04qzj8bxm2gqrfd2bscirngfm8fnb3m2jbv97w7rg9hcrr1npgb6";
+          }) {
           inherit pkgs;
-        };
+          };
+          */
       };
     };
 
@@ -45,7 +50,7 @@ rec {
       neovim = callPackage ./neovim.nix {};
       newsboat = callPackage ./newsboat.nix {}; 
       rofi = callPackageWith pkgs ./rofi.nix {};
-      # firefox = callPackage ./firefox.nix {};
+      firefox = callPackage ./firefox.nix {};
 
       # Emacs
       emacs = callPackage ./emacs.nix {};
@@ -73,7 +78,7 @@ rec {
       pavucontrol # Audio
       feh # Image viewer
       zathura # PDF Viewer
-      firefox-beta-bin
+      chromium # firefox-beta-bin
 
       # Programming
       elmPackages.elm elmPackages.elm-format # Elm
@@ -86,13 +91,14 @@ rec {
       rustup # Rust version manager
       ghc stack cabal-install haskellPackages.ghcid # Haskell
       # (all-hies.selection { selector = p: { inherit (p) ghc865 ghc864 ghc863 ghc843; }; })
-      sbcl lispPackages.quicklisp
+      #sbcl
+      lispPackages.quicklisp
 
       # Programming utils
       uncrustify astyle
 
       # Libraries and utils
-      jdk
+      oraclejdk
       libelf
       xorg.libX11 xorg.libxcb
       ntfs3g # Write support for NTFS
@@ -101,7 +107,7 @@ rec {
       # Command line utils
       git
       xclip xdg_utils
-      transmission # Torrent client
+      transmission-gtk # Torrent client
       unzip wget gnumake
       travis git-hub
       vim tmux htop
@@ -109,6 +115,12 @@ rec {
       nixops
 
       gcc-arm-embedded openocd
+
+      (pkgs.callPackage ./sbcl.nix {})
+
+      # Scripts
+      scripts.musicbee scripts.musicbee-setup
+      scripts.physexec
     ];
 
     # Fonts
@@ -126,6 +138,8 @@ rec {
     xresources.properties = {
       "Xft.dpi" = 96; # The ideal dpi
     };
+
+    services.lorri.enable = true;
 
     # All home config files
     home.file.".config/sway/config".text = pkgs.callPackage ./sway.nix {};

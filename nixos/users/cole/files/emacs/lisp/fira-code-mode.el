@@ -60,6 +60,9 @@
       (fira-code-mode--enable)
     (fira-code-mode--disable)))
 
+(define-globalized-minor-mode global-fira-code-mode fira-code-mode
+  fira-code-mode)
+
 (defun fira-code-mode--setup ()
   "Setup Fira Code Symbols"
   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol"))
