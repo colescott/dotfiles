@@ -238,6 +238,11 @@ in
       keep-outputs = true
       keep-derivations = true
     '';
+    nixPath = [
+      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+      "nixos-config=/home/cole/dotfiles/nixos/configuration.nix"
+      "/nix/var/nix/profiles/per-user/root/channels"
+    ];
   };
 
   system.copySystemConfiguration = true;
