@@ -10,6 +10,8 @@ in
       ./machine-configuration.nix
       ./udev.nix
 
+      ../nix-modules
+
       <home-manager/nixos>
       ./users
 
@@ -198,6 +200,11 @@ in
 
   features = {
     yubikey.enable = true;
+    dnscrypt = {
+      enable = true;
+      localDoh.enable = true;
+      cache.enable = true;
+    };
     mopidy = {
       enable = true;
       extensionPackages = [
