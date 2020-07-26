@@ -7,16 +7,11 @@
     
     aliases = {
       unstage = "reset HEAD --";
-      last = "log -1 HEAD";
       co = "checkout";
       f = "fetch";
-      rf = "checkout HEAD";
       l = "log --format=oneline --abbrev-commit --graph";
       ll = "log --format=fuller --date=relative --graph --stat";
-      l-simple = "log --format=oneline --abbrev-commit --date=relative --graph --first-parent";
       s = "status";
-      c = "commit -m";
-      amd = "commit --amend -m";
       r = "rebase";
       ri = "rebase -i";
       m = "merge --ff-only";
@@ -25,7 +20,6 @@
       b = "branch";
       mb = "checkout -b";
       db = "branch -d";
-      ch = "checkout";
       ignore = "update-index --skip-worktree";
       unignore = "update-index --no-skip-worktree";
       ignored = "!git ls-files -v | grep \'^S\'";
@@ -43,6 +37,7 @@
         pager = ''
           ${pkgs.unstable.gitAndTools.delta}/bin/delta --plus-color="#012800" --minus-color="#340001" --theme=none --hunk-style=plain'';
       };
+      commit = { verbose = true; };
       status = {
         showStatus = true;
         submoduleSummary = true;
@@ -51,7 +46,9 @@
         diffFilter =
           "${pkgs.unstable.gitAndTools.delta}/bin/delta --color-only --theme=none";
       };
+      diff = { mnemonicPrefix = true; };
       push = { default = "current"; };
+      pull = { ff = "only"; };
     };
     
     ignores = [
