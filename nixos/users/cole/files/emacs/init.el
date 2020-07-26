@@ -113,8 +113,6 @@
 (use-package workgroups2
   :config
   (progn
-    ;; Change prefix key
-    (setq wg-prefix-key (kbd "C-a"))
     ;; Change workgroups session file
     (setq wg-session-file "~/.emacs.d/.emacs_workgroups")
     (setq wg-mode-line-display-on t)
