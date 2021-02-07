@@ -1,0 +1,5 @@
+if pgrep -x wf-recorder > /dev/null; then
+    printf '{"text": "  "}\n'
+else
+    printf '{"text": ""}\n'
+fi

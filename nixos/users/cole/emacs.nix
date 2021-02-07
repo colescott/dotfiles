@@ -20,6 +20,7 @@ in
     epkgs.slime-company
     epkgs.haskell-mode
     epkgs.markdown-mode # Markdown
+    epkgs.rainbow-delimiters
 
     # Irony
     #epkgs.irony epkgs.irony-eldoc epkgs.company-irony epkgs.flycheck-irony

@@ -116,10 +116,22 @@
     ;; Change workgroups session file
     (setq wg-session-file "~/.emacs.d/.emacs_workgroups")
     (setq wg-mode-line-display-on t)
-   (workgroups-mode 1)))
+   (workgroups-mode nil)))
 
 (use-package slime
   :config
   (progn
     (load (expand-file-name "~/quicklisp/slime-helper.el"))
-    (setq inferior-lisp-program "sbcl")))
+
+    (setq lisp-indent-function 'common-lisp-indent-function)
+    (push 'slime-indentation slime-contribs)
+    
+    (setq inferior-lisp-program "sbcl")
+    (defadvice slime-repl-insert-prompt (after font-lock-face activate)
+      (let ((inhibit-read-only t))
+        (add-text-properties
+         slime-repl-prompt-start-mark (point)
+         '(font-lock-face
+           slime-repl-prompt-face
+           rear-nonsticky
+           (slime-repl-prompt read-only font-lock-face intangible)))))))

@@ -23,10 +23,12 @@ output eDP-1 pos 1920 0 res 1920x1080 scale 1
 ### Auto sleep
 #
 exec ${pkgs.swayidle}/bin/swayidle -w \
-         timeout 300 '${pkgs.swaylock}/bin/swaylock -f -c 000000' \
-         timeout 600 '${pkgs.sway}/bin/swaymsg "output * dpms off"' \
-              resume '${pkgs.sway}/bin/swaymsg "output * dpms on"' \
-         before-sleep '${pkgs.swaylock}/bin/swaylock -f -c 000000'
+          timeout 300 '${pkgs.swaylock}/bin/swaylock -f -c 000000' \
+          timeout 600 '${pkgs.sway}/bin/swaymsg "output * dpms off"' \
+               resume '${pkgs.sway}/bin/swaymsg "output * dpms on"' \
+         before-sleep '${pkgs.swaylock}/bin/swaylock -f -c 000000' \
+                 lock '${pkgs.swaylock}/bin/swaylock -f -c 000000'
+bindsym $mod+Shift+z exec loginctl lock-session
 
 ### Input configuration
 #
@@ -166,6 +168,17 @@ input "2:7:SynPS/2_Synaptics_TouchPad" {
     # Show the next scratchpad window or hide the focused scratchpad window.
     # If there are multiple scratchpad windows, this command cycles through them.
     bindsym $mod+minus scratchpad show
+
+
+#
+# Default workspace location
+#
+assign [class="Firefox"] 2
+assign [class="Chromium"] 2
+assign [class="Slack"] 5
+assign [class="discord"] 6
+assign [class="spotify"] 7
+
 #
 # Resizing containers:
 #
@@ -200,7 +213,7 @@ default_border none
 # Status Bar:
 #
 bar {
-    swaybar_command ${pkgs.waybar}/bin/waybar
+    swaybar_command ${pkgs.waybar.override { pulseSupport = true; } }/bin/waybar
     position top
 }
 

@@ -65,7 +65,7 @@ window#waybar.chromium {
     padding: 0 5px;
     background-color: transparent;
     color: #657b83;
-    border-bottom: 3px solid transparent;
+    border-bottom: 1px solid transparent;
 }
 
 #workspaces button.focused {
@@ -82,17 +82,10 @@ window#waybar.chromium {
     border-bottom: 1px solid #dc322f;
 }
 
-#clock, #battery, #cpu, #memory, #temperature, #backlight, #network, #pulseaudio, #custom-media, #tray, #mode, #idle_inhibitor {
+#clock, #battery, #cpu, #memory, #temperature, #backlight, #network, #pulseaudio, #custom-yubikey, #custom-progress, #custom-recording, #custom-media, #tray, #mode, #idle_inhibitor {
     padding: 0 10px;
     margin: 0 2px;
     color: #657b83;
-}
-
-#clock {
-    background-color: #073642;
-}
-
-#battery {
     background-color: #073642;
 }
 
@@ -101,9 +94,24 @@ window#waybar.chromium {
     background-color: #859900;
 }
 
-@keyframes blink {
+@keyframes yubikey-blink {
     to {
         background-color: #d33682;
+        color: #93a1a1;
+    }
+}
+
+#custom-yubikey {
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes blink {
+    to {
+        background-color: #b58900;;
         color: #93a1a1;
     }
 }
@@ -122,36 +130,12 @@ label:focus {
     background-color: #073642;
 }
 
-#cpu {
-    background-color: #073642;
-}
-
-#memory {
-    background-color: #073642;
-}
-
-#backlight {
-    background-color: #073642;
-}
-
-#network {
-    background-color: #073642;
-}
-
 #network.disconnected {
     background-color: #002b36;
 }
 
-#pulseaudio {
-    background-color: #073642;
-}
-
 #pulseaudio.muted {
     background-color: #002b36;
-}
-
-#temperature {
-    background-color: #073642;
 }
 
 #temperature.critical {
@@ -160,10 +144,6 @@ label:focus {
 
 #tray {
     background-color: #002b36;
-}
-
-#idle_inhibitor {
-    background-color: #073642;
 }
 
 #idle_inhibitor.activated {

@@ -20,10 +20,11 @@ rec {
     extraGroups = [
       "wheel"
       "networkmanager"
-      "vboxusers" "docker" "lxd"
+      "vboxusers" "docker" "lxd" "libvirtd"
       "plugdev" "dialout"
       "sound" "audio"
       "video"
+      "tty"
     ];
     uid = 1000;
     shell = pkgs.zsh;
@@ -31,18 +32,17 @@ rec {
   };
 
   home-manager.users.cole = {
+    imports = [
+      ../../../nix-modules/home-manager
+    ];
     nixpkgs.config = {
       allowUnfree = true;
       packageOverrides = pkgs: {
-        /*
-        nur = import (builtins.fetchTarball {
-          url = "https://github.com/nix-community/NUR/archive/master.tar.gz";
-          sha256 = "04qzj8bxm2gqrfd2bscirngfm8fnb3m2jbv97w7rg9hcrr1npgb6";
-          }) {
+        nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
           inherit pkgs;
-          };
-          */
+        };
       };
+      waybar = pkgs.waybar.override { pulseSupport = true; };
     };
 
     programs = {
@@ -116,7 +116,8 @@ rec {
 
       gcc-arm-embedded openocd
 
-      (pkgs.callPackage ./sbcl.nix {})
+      wf-recorder
+      cv
 
       # Scripts
       scripts.musicbee scripts.musicbee-setup
@@ -134,6 +135,10 @@ rec {
       enableSshSupport = true;
       pinentryFlavor = "gtk2";
     };
+    services.yubikey-touch-detector = {
+      enable = true;
+      package = pkgs.nur.repos.mic92.yubikey-touch-detector;
+    };
 
     xresources.properties = {
       "Xft.dpi" = 96; # The ideal dpi
@@ -142,9 +147,6 @@ rec {
     services.lorri.enable = true;
 
     # All home config files
-    home.file.".config/sway/config".text = pkgs.callPackage ./sway.nix {};
-    home.file.".config/waybar/config".source = ./files/waybar/config;
-    home.file.".config/waybar/style.css".source = ./files/waybar/style.css;
     home.file.".npmrc".source = ./files/npmrc;
     home.file.".xmobarrc".source = ./files/xmobarrc;
     home.file.".tmux.conf".source = ./files/tmux.conf;
@@ -153,10 +155,17 @@ rec {
     home.file."wallpaper.png".source = ./files/wallpaper.png;
     home.file.".gnupg/gpg.conf".source = ./files/gpg.conf;
     home.file.".stack/config.yaml".source = ./files/stack-config.yaml;
+
+    home.file.".clang_complete".text = pkgs.callPackage ./clang-complete.nix {};
+    home.file.".config/sway/config".text = pkgs.callPackage ./sway.nix {};
+
     home.file.".emacs.d" = {
       source = ./files/emacs;
       recursive = true;
     };
-    home.file.".clang_complete".text = pkgs.callPackage ./clang-complete.nix {};
+    home.file.".config/waybar" = {
+      source = ./files/waybar;
+      recursive = true;
+    };
   };
 }

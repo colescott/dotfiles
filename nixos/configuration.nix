@@ -17,6 +17,7 @@ in
 
       ./docker.nix
       ./lxd.nix
+      ./windows.nix
       ./sway.nix
 
       #./zsh.nix
@@ -26,6 +27,8 @@ in
       ./features/mopidy.nix
       ./features/yubikey.nix
       ./features/wireguard.nix
+      ./features/vt420.nix
+      ./features/wf-recorder.nix
 
       ./fonts.nix
       ./scripts.nix
@@ -44,8 +47,11 @@ in
     permittedInsecurePackages = [
       "p7zip-16.02"
     ];
-    packageOverrides = pkgs: {
+    packageOverrides = let
+        nixpkgs-mesa = builtins.fetchTarball "https://github.com/nixos/nixpkgs/archive/bdac777becdbb8780c35be4f552c9d4518fe0bdb.tar.gz";
+      in pkgs: {
       unstable = unstable;
+      mesa_drivers = (import nixpkgs-mesa { }).mesa_drivers;
       steam = pkgs.steam.override {
         extraPkgs = pkgs: with pkgs; [
           gnome3.gtk
@@ -65,6 +71,11 @@ in
       mopidy-mpd = unstable.mopidy-mpd;
       mopidy-spotify = unstable.mopidy-spotify;
       mopidy-iris = unstable.mopidy-iris;
+
+      # NUR
+      nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+        inherit pkgs;
+      };
     };
   };
   environment.systemPackages = with pkgs; [
@@ -72,6 +83,7 @@ in
     gnumake
     curl
     gnupg
+    manpages
     cachix
   ];
   programs.dconf.enable = true;
@@ -92,10 +104,15 @@ in
   hardware.opengl = {
     enable = true;
     driSupport32Bit = true;
-     extraPackages = with pkgs; [
-       libGL
-     ];
-     setLdLibraryPath = true;
+    package = pkgs.mesa_drivers;
+    extraPackages = with pkgs; [
+      libGL
+      intel-media-driver
+      vaapiIntel
+      vaapiVdpau
+      libvdpau-va-gl
+    ];
+    setLdLibraryPath = true;
   };
 
   # Enable network manager
@@ -130,12 +147,14 @@ in
   };
   # Allow for exFAT (hopefully not needed soon)
   # boot.extraModulePackages = [ config.boot.kernelPackages.exfat-nofuse ];
+  boot.supportedFilesystems = [ "ntfs" ];
 
   #
   # Services:
   #
   services = {
     postgresql.enable = true;
+    flatpak.enable = true;
 
     # Xserver for matlab :(
     xserver = {
@@ -159,6 +178,10 @@ in
     tlp.enable = true;
     acpid.enable = true;
     pcscd.enable = true;
+    upower = {
+      enable = true;
+      criticalPowerAction = "Hibernate";
+    };
 
     # Enable CUPS
     printing = {
@@ -201,8 +224,6 @@ in
   programs.zsh.enable = true;
   environment.pathsToLink = [ "/share/zsh" ];
 
-  networking.wireguard.enable = true;
-
   features = {
     yubikey.enable = true;
     dnscrypt = {
@@ -230,7 +251,21 @@ in
     wireguard = {
       enable = true;
       wirelessInterface = "wlan0";
-      extraInterfaces = [ "eth0" ];
+      extraInterfaces = [];
+    };
+    vt420.enable = true; 
+    wf-recorder.enable = true;
+  };
+
+  xdg = {
+    icons.enable = true;
+    portal = {
+      enable = true;
+      extraPortals = [
+        #pkgs.xdg-desktop-portal-gtk
+        pkgs.xdg-desktop-portal-wlr
+      ];
+      gtkUsePortal = true;
     };
   };
 
@@ -244,10 +279,15 @@ in
       keep-derivations = true
     '';
     nixPath = [
-      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos-unstable"
       "nixos-config=/home/cole/dotfiles/nixos/configuration.nix"
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
+  };
+
+  documentation = {
+    #dev.enable = true;
+    #doc.enable = false;
   };
 
   system.copySystemConfiguration = true;

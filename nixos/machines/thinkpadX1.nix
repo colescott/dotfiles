@@ -9,8 +9,7 @@
 
   boot = {
     kernelModules = [ "kvm-intel" "snd_sof" ];
-    kernelPackages = pkgs.linuxPackages_latest;
-    blacklistedKernelModules = ["snd_hda_intel" "snd_soc_skl"];
+    blacklistedKernelModules = ["snd_soc_skl"];
 
     loader = {
       efi = {
@@ -51,7 +50,7 @@
       # Initrd secrets for decryption
       #
       secrets = {
-        "keyfile.bin" = "/etc/secrets/initrd/keyfile.bin";
+        "keyfile.bin" = /etc/secrets/initrd/keyfile.bin;
       };
     };
   };
@@ -76,9 +75,9 @@
     ];
 
   hardware.pulseaudio.extraConfig = ''
-load-module module-alsa-sink device=hw:0,0 channels=4
-load-module module-alsa-source device=hw:0,7 channels=4
-'';
+    load-module module-alsa-sink   device=hw:0,0 channels=4
+    load-module module-alsa-source device=hw:0,6 channels=4
+  '';
 
   # Fingerprints
   services.fprintd.enable = true;
