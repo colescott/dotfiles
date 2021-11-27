@@ -153,7 +153,6 @@ rec {
 
     # All home config files
     home.file.".npmrc".source = ./files/.npmrc;
-    home.file.".gdbinit".source = ./files/.gdbinit;
     home.file.".xmobarrc".source = ./files/.xmobarrc;
     home.file.".tmux.conf".source = ./files/.tmux.conf;
     home.file.".stalonetrayrc".source =  ./files/.stalontrayrc;
@@ -175,5 +174,11 @@ rec {
     '';
     home.file.".config/sway/config".text = pkgs.callPackage ./sway.nix {};
     home.file.".config/i3/config".text = pkgs.callPackage ./i3.nix {};
+
+    # Enable gdb dashboard
+    home.file.".gdbinit".source = pkgs.fetchurl {
+      url = "https://raw.githubusercontent.com/cyrus-and/gdb-dashboard/6c22257da6761aa8f5dabbc7a4c846e5a2d4d0ab/.gdbinit";
+      sha256 = "sha256-W8HJCfYdADdM+/f9yUkRM081QcD1Pt9I73wlicCGWko=";
+    };
   };
 }
