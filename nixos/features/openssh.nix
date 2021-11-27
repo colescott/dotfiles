@@ -1,4 +1,3 @@
-with import <nixpkgs> {};
 { config, lib, pkgs, ... }:
 
 with lib;

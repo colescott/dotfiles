@@ -33,7 +33,6 @@ in
 {
   enable = true;
   withPython3 = true;
-  withPython = false;
   extraConfig = builtins.readFile ./nviminit.vim;
   plugins = with pkgs.vimPlugins; [
     NeoSolarized # Solarized theme

@@ -17,102 +17,79 @@ in
 
       ./docker.nix
       ./lxd.nix
-      ./windows.nix
-      ./sway.nix
-
-      #./zsh.nix
-      ./modules/zimfw
 
       # Features
       ./features/mopidy.nix
       ./features/yubikey.nix
-      ./features/wireguard.nix
       ./features/vt420.nix
       ./features/wf-recorder.nix
+      ./features/steam.nix
 
       ./fonts.nix
       ./scripts.nix
-
-      # Cachix
-      #/etc/nixos/cachix.nix
-    ];
+   ];
 
   # Set time zone to pacific
   time.timeZone = "US/Pacific";
+  # This allows us to dual boot windows without clock issues
   time.hardwareClockInLocalTime = true;
 
   # Default packages
   nixpkgs.config = {
     allowUnfree = true; # Allows packages with unfree licences
-    permittedInsecurePackages = [
-      "p7zip-16.02"
-    ];
-    packageOverrides = let
-        nixpkgs-mesa = builtins.fetchTarball "https://github.com/nixos/nixpkgs/archive/bdac777becdbb8780c35be4f552c9d4518fe0bdb.tar.gz";
-      in pkgs: {
+    
+    packageOverrides = pkgs: {
+      # Export unstable to everyone
       unstable = unstable;
-      mesa_drivers = (import nixpkgs-mesa { }).mesa_drivers;
-      steam = pkgs.steam.override {
-        extraPkgs = pkgs: with pkgs; [
-          gnome3.gtk
-          zlib
-          dbus
-          freetype
-          glib
-          atk
-          cairo
-          gdk_pixbuf
-          pango
-          fontconfig
-          xorg.libxcb
-        ];
-      };
+
       mopidy = unstable.mopidy;
       mopidy-mpd = unstable.mopidy-mpd;
       mopidy-spotify = unstable.mopidy-spotify;
       mopidy-iris = unstable.mopidy-iris;
-
-      # NUR
-      nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
-        inherit pkgs;
-      };
     };
   };
+
   environment.systemPackages = with pkgs; [
     git
     gnumake
     curl
     gnupg
     manpages
-    cachix
   ];
+
   programs.dconf.enable = true;
+  programs.light.enable = true;
 
   # Hardware defaults
-  hardware.pulseaudio = {
-    enable = true;
-    support32Bit = true;
-    daemon.config = {
-      default-sample-rate = 48000;
-      alternate-sample-rate = 44410;
-      avoid-resampling = true;
+  hardware = {
+    bluetooth.enable = true;
+    pulseaudio = {
+      enable = true;
+      support32Bit = true;
+      daemon.config = {
+        default-sample-rate = 48000;
+        alternate-sample-rate = 44410;
+        avoid-resampling = true;
+      };
+
+      # Add bluetooth support
+      extraModules = [ pkgs.pulseaudio-modules-bt ];
+      package = pkgs.pulseaudioFull;
     };
-    package = pkgs.pulseaudioFull; # Add bluetooth support
-  };
-  sound.mediaKeys.enable = true;
-  hardware.bluetooth.enable = true;
-  hardware.opengl = {
-    enable = true;
-    driSupport32Bit = true;
-    package = pkgs.mesa_drivers;
-    extraPackages = with pkgs; [
-      libGL
-      intel-media-driver
-      vaapiIntel
-      vaapiVdpau
-      libvdpau-va-gl
-    ];
-    setLdLibraryPath = true;
+
+    opengl = {
+      enable = true;
+      driSupport32Bit = true;
+      extraPackages = with pkgs; [
+        mesa_drivers
+        libGL
+        intel-media-driver
+        vaapiIntel
+        vaapiVdpau
+        libvdpau-va-gl
+      ];
+      setLdLibraryPath = true;
+    };
   };
 
   # Enable network manager
@@ -122,10 +99,7 @@ in
       enable = true;
       interfaces = [ "wlan0" ];
       networks = credentials.wifiNetworks;
-    };
-    networkmanager = {
-      enable = false;
-      dns = "none";
+      userControlled.enable = true;
     };
     firewall = {
       enable = false;
@@ -133,6 +107,7 @@ in
       allowedTCPPorts = [ ];
       allowedUDPPorts = [ 5353 ];
     };
+
     nameservers = [ "1.1.1.1" "1.0.0.1" ];
     # Don't take nameservers from DHCP
     dhcpcd.extraConfig = ''
@@ -145,25 +120,19 @@ in
     enable = true;
     theme = "breeze";
   };
-  # Allow for exFAT (hopefully not needed soon)
-  # boot.extraModulePackages = [ config.boot.kernelPackages.exfat-nofuse ];
   boot.supportedFilesystems = [ "ntfs" ];
 
   #
   # Services:
   #
   services = {
-    postgresql.enable = true;
-    flatpak.enable = true;
-
-    # Xserver for matlab :(
     xserver = {
       enable = true;
       autorun = false;
       desktopManager.xterm.enable = false;
       displayManager = {
         lightdm.enable = true;
-        defaultSession = "sway";
+        #defaultSession = "sway";
       };
       windowManager.i3.enable = true;
       synaptics = {
@@ -172,6 +141,10 @@ in
         vertEdgeScroll = false;
         palmDetect = true;
       };
+      videoDrivers = [ "nvidia" ];
+      screenSection = ''
+        Option         "metamodes" "1920x1080_144 +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
+      '';
     };
 
     # Battery/power utils
@@ -192,19 +165,8 @@ in
     # Bluetooooth
     blueman.enable = true;
 
-    # Manual
-    nixosManual = {
-      showManual = true;
-      ttyNumber = 9;
-    };
-
     # Enable geoclue location service
     geoclue2.enable = true;
-
-    # Redshift for my eyes
-    redshift = {
-      enable = true;
-    };
 
     # Avahi for mDNS
     avahi = {
@@ -251,30 +213,25 @@ in
     wireguard = {
       enable = true;
       wirelessInterface = "wlan0";
-      extraInterfaces = [];
+      credentials = credentials.wireguard;
     };
     vt420.enable = true; 
     wf-recorder.enable = true;
+    steam.enable = true;
   };
 
   xdg = {
     icons.enable = true;
-    portal = {
-      enable = true;
-      extraPortals = [
-        #pkgs.xdg-desktop-portal-gtk
-        pkgs.xdg-desktop-portal-wlr
-      ];
-      gtkUsePortal = true;
-    };
   };
-
+  
   nix = {
+    package = pkgs.nixFlakes;
     gc = {
       automatic = true;
       options = "--delete-older-than 14d";
     };
     extraOptions = ''
+      experimental-features = nix-command flakes
       keep-outputs = true
       keep-derivations = true
     '';
@@ -286,10 +243,10 @@ in
   };
 
   documentation = {
-    #dev.enable = true;
-    #doc.enable = false;
+    dev.enable = true;
+    doc.enable = true;
   };
 
   system.copySystemConfiguration = true;
-  system.stateVersion = "20.03";
+  system.stateVersion = "21.05";
 }

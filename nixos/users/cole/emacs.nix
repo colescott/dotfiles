@@ -45,6 +45,7 @@ in
     #epkgs.org-mode
     #epkgs.org-babel
     #epkgs.org-babel-gnuplot
+    epkgs.graphviz-dot-mode
     #epkgs.gnuplot
     #pkgs.gnuplot
 
@@ -53,24 +54,9 @@ in
     pkgs.liblapack
     pkgs.gfortran
     (lib.getLib pkgs.gfortran.cc)
-
+    
     pkgs.nixpkgs-fmt
     #pkgs.nur.repos.mic92.rnix-lsp-unstable
   ];
-  /*
-  overrides = self: super: {
-    emacs = self.emacsWithPackages (
-      (with pkgs; [
-        libffi
-        blas
-        liblapack
-        gfortran
-        (stdenv.lib.getLib gfortran.cc)
-
-        cscope
-      ])
-    );
-    };
-*/
 }
 

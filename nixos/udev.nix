@@ -24,5 +24,8 @@ KERNEL=="ttyACM*", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", MODE:
 # permission granted to all users.
 ATTR{idVendor}=="1443", MODE:="666"
 ACTION=="add", ATTR{idVendor}=="0403", MODE:="666"
+
+SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6001", MODE="0666", GROUP="plugdev"
+SUBSYSTEM=="usb", ATTR{idVendor}=="04d8", ATTR{idProduct}=="900a", MODE="0666", GROUP="plugdev"
   '';
 }

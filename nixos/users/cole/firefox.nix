@@ -66,13 +66,13 @@ let
     "dom.enable_performance" = false;
     "dom.enable_user_timing" = false;
     "geo.enabled" = false;
-    "media.peerconnection.enabled" = false; # WebRTC
+    #"media.peerconnection.enabled" = false; # WebRTC
     "javascript.options.wasm" = false;
     "javascript.options.asmjs" = false;
     "javascript.options.shared_memory" = false;
-    "webgl.disabled" = true;
+    #"webgl.disabled" = true;
     "dom.disable_beforeunload" = true;
-    "dom.event.contextmenu.enabled" = false;
+    #"dom.event.contextmenu.enabled" = false;
     "offline-apps.allow_by_default" = false;
 
     # Clipboard
@@ -84,11 +84,11 @@ let
     "browser.send_pings" = false;
 
     # getUserMedia
-    "media.navigator.enabled" = false;
-    "media.navigator.video.enabled" = false;
-    "media.getusermedia.screensharing.enabled" = false;
-    "media.audiocapture.enabled" = false;
-    "media.getusermedia.browser.enabled" = false;
+    "media.navigator.enabled" = true;
+    "media.navigator.video.enabled" = true;
+    "media.getusermedia.screensharing.enabled" = true;
+    "media.audiocapture.enabled" = true;
+    "media.getusermedia.browser.enabled" = true;
 
     # Misc JS APIs
     "media.webspeech.recognition.enable" = false;

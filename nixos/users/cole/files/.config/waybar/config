@@ -9,6 +9,7 @@
         "custom/recording",
         "custom/yubikey",
         "idle_inhibitor",
+        "network",
         "pulseaudio",
         "backlight",
         "cpu",
@@ -63,9 +64,11 @@
         "format-icons": ["", "", "", "", ""]
     },
     "network": {
+        "interface": "wg0",
+        "format": "{ifname}",
         "format-wifi": "{essid} ({signalStrength}%) ",
-        "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
-        "format-linked": "{ifname} (No IP) ",
+        "format-ethernet": "{ifname}",
+        "format-linked": "{ifname} (No IP)",
         "format-disconnected": "Disconnected ⚠",
         "format-alt": "{ifname}: {ipaddr}/{cidr}"
     },

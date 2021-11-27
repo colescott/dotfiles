@@ -87,7 +87,44 @@
   (setq org-log-done 'time)
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((gnuplot . t))))
+   '((gnuplot . t)
+     (dot . t)))
+
+  ;; Add templates
+  (add-to-list 'org-modules 'org-tempo t)
+  (add-to-list 'org-structure-template-alist
+    '("dot" . "src dot"))
+  (add-to-list 'org-src-lang-modes (quote ("dot" . graphviz-dot)))
+
+  (setq org-agenda-files '("~/org/journal.org"))
+  (setq org-capture-templates
+        '(("j" "Journal Entry"
+           entry (file+olp+datetree "~/org/journal.org")
+           "* %U %?"
+           :empty-lines 1)
+          ("e" "Add Event"
+           entry (file+olp+datetree "~/org/journal.org")
+           "* %T %?"
+           :time-prompt t)
+          ("t" "Add TODO"
+           entry (file+olp+datetree "~/org/journal.org")
+           "* TODO %T %?"
+           :time-prompt t)
+          ("T" "Add TODO with deadline"
+           entry (file+olp+datetree "~/org/journal.org")
+           "* TODO %T %?
+DEADLINE: %^t"
+           :time-prompt t)
+          ("m" "Set current day mood"
+           entry (file+olp+datetree "~/org/journal.org")
+           "%(progn
+(interactive)
+(save-excursion (org-up-heading-safe)
+  (org-set-property \"Mood\" (org-read-property-value \"Mood\")))
+\"done\")
+%?")))
+  (define-key global-map (kbd "C-c x")
+    (lambda () (interactive) (org-capture))))
 
 ;; Helm mode
 (use-package helm

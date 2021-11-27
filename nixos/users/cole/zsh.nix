@@ -19,6 +19,10 @@
     export PASSWORD_STORE_GPG_OPTS='--no-throw-keyids'
   '';
 
+  loginExtra = ''
+    . /etc/profile
+   '';
+
   /*
   initExtraBeforeCompInit = ''
     # Enable Powerlevel10k instant prompt. Should stay close to the top of ./zshrc.fake.

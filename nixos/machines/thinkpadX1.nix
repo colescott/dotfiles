@@ -55,41 +55,73 @@
     };
   };
 
-  fileSystems."/" =
-    { device = "zroot/root";
+  fileSystems = {
+    "/" = {
+      device = "zroot/root";
       fsType = "zfs";
     };
 
-  fileSystems."/efi" =
-    { device = "/dev/disk/by-uuid/CA04-D731";
+    "/efi" = {
+      device = "/dev/disk/by-uuid/CA04-D731";
       fsType = "vfat";
     };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/1e1b22fe-5318-4981-bed7-4521bf458c63";
+    "/boot" = {
+      device = "/dev/disk/by-uuid/1e1b22fe-5318-4981-bed7-4521bf458c63";
       fsType = "ext4";
     };
 
-  swapDevices =
-    [ { device = "/dev/disk/by-uuid/cb7f09cb-b2fb-49bd-92c5-860856a67e24"; }
-    ];
+    "/ext" = {
+      device = "/dev/sda1";
+      fsType = "ext4";
+      options = [ "noauto" ];
+    };
+  };
+
+  swapDevices = [
+    { device = "/dev/disk/by-uuid/cb7f09cb-b2fb-49bd-92c5-860856a67e24"; }
+  ];
 
   hardware.pulseaudio.extraConfig = ''
     load-module module-alsa-sink   device=hw:0,0 channels=4
     load-module module-alsa-source device=hw:0,6 channels=4
   '';
 
+  # eGPU nvidia
+  hardware.nvidia = {
+    prime = {
+      sync = {
+        enable = true;
+        allowExternalGpu = true;
+      };
+      nvidiaBusId = "PCI:10:0:0";
+      intelBusId = "PCI:0:2:0";
+    };
+    modesetting.enable = true;
+  };
+
+
   # Fingerprints
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = true;
-  services.fwupd.enable = true;
+
+  # Firmware update service (to be used on mounted drive)
+  services.fwupd = {
+    enable = true;
+  };
+  environment.etc."fwupd/uefi.conf".source = lib.mkForce ( pkgs.writeText "uefi.conf" ''
+    [uefi]
+    OverrideESPMountPoint=/mnt
+  '');
 
   # Power
   services.tlp = {
     enable = true;
   };
-  powerManagement.enable = true;
-  powerManagement.powertop.enable = true;
+  powerManagement = {
+    enable = true;
+    powertop.enable = true;
+  };
 
   services.thinkfan = {
     enable = true;
