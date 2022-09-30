@@ -1,18 +1,12 @@
 { config, pkgs, ... }:
 let
-  unstable = import <nixos-unstable> { config = { allowUnfree = true; }; };
   credentials = import ./credentials.nix;
 in
 {
   imports =
     [
-      # Current machine
-      ./machine-configuration.nix
       ./udev.nix
 
-      ../nix-modules
-
-      <home-manager/nixos>
       ./users
 
       ./docker.nix
@@ -29,32 +23,26 @@ in
       ./scripts.nix
    ];
 
+  # Allow emulating aarch64-linux builds with qemu
+  boot.binfmt.emulatedSystems = [ "armv7l-linux" "aarch64-linux" ];
+  boot.binfmt.registrations.armv7l = {
+    interpreter = "${pkgs.qemu_full}/bin/qemu-system-arm";
+    magicOrExtension = ''\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00'';
+    mask = ''\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\x00\xff\xfe\xff\xff\xff'';
+  };
+
+
   # Set time zone to pacific
   time.timeZone = "US/Pacific";
   # This allows us to dual boot windows without clock issues
   time.hardwareClockInLocalTime = true;
-
-  # Default packages
-  nixpkgs.config = {
-    allowUnfree = true; # Allows packages with unfree licences
-    
-    packageOverrides = pkgs: {
-      # Export unstable to everyone
-      unstable = unstable;
-
-      mopidy = unstable.mopidy;
-      mopidy-mpd = unstable.mopidy-mpd;
-      mopidy-spotify = unstable.mopidy-spotify;
-      mopidy-iris = unstable.mopidy-iris;
-    };
-  };
 
   environment.systemPackages = with pkgs; [
     git
     gnumake
     curl
     gnupg
-    manpages
+    man-pages
   ];
 
   programs.dconf.enable = true;
@@ -72,8 +60,6 @@ in
         avoid-resampling = true;
       };
 
-      # Add bluetooth support
-      extraModules = [ pkgs.pulseaudio-modules-bt ];
       package = pkgs.pulseaudioFull;
     };
 
@@ -104,8 +90,8 @@ in
     firewall = {
       enable = false;
       allowPing = true;
-      allowedTCPPorts = [ ];
-      allowedUDPPorts = [ 5353 ];
+      allowedTCPPorts = [ 56207 ];
+      allowedUDPPorts = [ 5353 56207 ];
     };
 
     nameservers = [ "1.1.1.1" "1.0.0.1" ];
@@ -115,37 +101,32 @@ in
     '';
   };
 
-  # pretty boot logo
-  boot.plymouth = {
-    enable = true;
-    theme = "breeze";
-  };
   boot.supportedFilesystems = [ "ntfs" ];
 
   #
   # Services:
   #
   services = {
-    xserver = {
-      enable = true;
-      autorun = false;
-      desktopManager.xterm.enable = false;
-      displayManager = {
-        lightdm.enable = true;
-        #defaultSession = "sway";
-      };
-      windowManager.i3.enable = true;
-      synaptics = {
-        enable = true;
-        vertTwoFingerScroll = true;
-        vertEdgeScroll = false;
-        palmDetect = true;
-      };
-      videoDrivers = [ "nvidia" ];
-      screenSection = ''
-        Option         "metamodes" "1920x1080_144 +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
-      '';
-    };
+    # xserver = {
+    #   enable = true;
+    #   autorun = false;
+    #   desktopManager.xterm.enable = false;
+    #   displayManager = {
+    #     lightdm.enable = true;
+    #     #defaultSession = "sway";
+    #   };
+    #   windowManager.i3.enable = true;
+    #   synaptics = {
+    #     enable = true;
+    #     vertTwoFingerScroll = true;
+    #     vertEdgeScroll = false;
+    #     palmDetect = true;
+    #   };
+    #   videoDrivers = [ "nvidia" ];
+    #   screenSection = ''
+    #     Option         "metamodes" "HDMI-0: 1920x1080_144 +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
+    #   '';
+    # };
 
     # Battery/power utils
     tlp.enable = true;
@@ -190,25 +171,23 @@ in
     yubikey.enable = true;
     dnscrypt = {
       enable = true;
-      localDoh.enable = true;
-      cache.enable = true;
+      privateKey = "/etc/nixos-secrets/dnscrypt.pem";
     };
     mopidy = {
       enable = true;
-      extensionPackages = [
-        pkgs.mopidy-iris
+      extensionPackages = with pkgs; [
+        mopidy-iris
+        mopidy-local
+        mopidy-youtube
       ];
       mpd = {
         enable = true;
       };
-      spotify = {
-        enable = true;
-        credentials = credentials.spotify;
-      };
       mediaDirs = [{
         name = "Music";
-        path = "/home/cole/Music";
+        path = "/home/Music";
       }];
+      localMediaDir = "/home/Music";
     };
     wireguard = {
       enable = true;
@@ -235,11 +214,6 @@ in
       keep-outputs = true
       keep-derivations = true
     '';
-    nixPath = [
-      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos-unstable"
-      "nixos-config=/home/cole/dotfiles/nixos/configuration.nix"
-      "/nix/var/nix/profiles/per-user/root/channels"
-    ];
   };
 
   documentation = {

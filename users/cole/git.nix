@@ -26,7 +26,7 @@
     };
     
     signing = {
-      signByDefault = true;
+      signByDefault = false;
       key = "303C49558A5CEFA0";
     };
     
@@ -35,7 +35,7 @@
         editor = "nvim";
         whitespace = "blank-at-eol,blank-at-eof,space-before-tab";
         pager = ''
-          ${pkgs.unstable.gitAndTools.delta}/bin/delta --plus-color="#012800" --minus-color="#340001" --theme=none --hunk-style=plain'';
+          ${pkgs.unstable.gitAndTools.delta}/bin/delta'';
       };
       commit = { verbose = true; };
       status = {
@@ -44,7 +44,7 @@
       };
       interactive = {
         diffFilter =
-          "${pkgs.unstable.gitAndTools.delta}/bin/delta --color-only --theme=none";
+          "${pkgs.unstable.gitAndTools.delta}/bin/delta --color-only";
       };
       diff = { mnemonicPrefix = true; };
       push = { default = "current"; };

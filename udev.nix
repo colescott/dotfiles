@@ -27,5 +27,8 @@ ACTION=="add", ATTR{idVendor}=="0403", MODE:="666"
 
 SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6001", MODE="0666", GROUP="plugdev"
 SUBSYSTEM=="usb", ATTR{idVendor}=="04d8", ATTR{idProduct}=="900a", MODE="0666", GROUP="plugdev"
+
+# Rules for Keysight
+SUBSYSTEM=="usb", ATTR{idVendor}=="2a8d", ATTR{idProduct}=="0396", MODE="0666", GROUP="plugdev"
   '';
 }

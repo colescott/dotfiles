@@ -9,7 +9,14 @@
 
   boot = {
     kernelModules = [ "kvm-intel" "snd_sof" ];
-    blacklistedKernelModules = ["snd_soc_skl"];
+    blacklistedKernelModules = [ "snd_soc_skl" "nouveau" ];
+
+    kernelParams = [ "iommu=pt" "intel_iommu=on,igfx_off" "pcie_acs_override=downstream,multifunction" ];
+
+    extraModprobeConfig = ''
+      options vfio-pci ids=8086:15d3,10de:1c81,10de:0fb9,8086:15c0,8086:15c1,1b73:1100
+
+    '';
 
     loader = {
       efi = {
@@ -27,7 +34,7 @@
     
     initrd = {
       availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
-      kernelModules = [ ];
+      kernelModules = [ "vfio-pci" ];
 
       #
       # Encrypted partitions
@@ -71,9 +78,9 @@
       fsType = "ext4";
     };
 
-    "/ext" = {
-      device = "/dev/sda1";
-      fsType = "ext4";
+    "/secure" = {
+      device = "zroot/secure";
+      fsType = "zfs";
       options = [ "noauto" ];
     };
   };
@@ -88,17 +95,17 @@
   '';
 
   # eGPU nvidia
-  hardware.nvidia = {
-    prime = {
-      sync = {
-        enable = true;
-        allowExternalGpu = true;
-      };
-      nvidiaBusId = "PCI:10:0:0";
-      intelBusId = "PCI:0:2:0";
-    };
-    modesetting.enable = true;
-  };
+  # hardware.nvidia = {
+  #   prime = {
+  #     sync = {
+  #       enable = true;
+  #       allowExternalGpu = true;
+  #     };
+  #     nvidiaBusId = "PCI:10:0:0";
+  #     intelBusId = "PCI:0:2:0";
+  #   };
+  #   modesetting.enable = true;
+  # };
 
 
   # Fingerprints

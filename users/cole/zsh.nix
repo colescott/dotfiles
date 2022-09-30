@@ -7,7 +7,7 @@
 
   initExtra = ''
     [ -n "$TMUX" ] && export TERM=screen-256color
-    ${pkgs.fortune}/bin/fortune -s -o computers | ${pkgs.cowsay}/bin/cowthink -f bunny | ${pkgs.lolcat}/bin/lolcat
+    ${pkgs.fortune}/bin/fortune -s computers | ${pkgs.cowsay}/bin/cowthink -f bunny | ${pkgs.lolcat}/bin/lolcat
     DEFAULT_USER="$USER";
     # PATH=$HOME/.npm-packages/bin:$PATH:$HOME/.local/bin:$HOME/go/bin
 

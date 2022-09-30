@@ -5,7 +5,6 @@ let
   cfg = config.features.mopidy;
 
   extensionPackages = cfg.extensionPackages
-    ++ optional cfg.spotify.enable pkgs.mopidy-spotify
     ++ optional cfg.mpd.enable pkgs.mopidy-mpd;
 in
 {
@@ -27,6 +26,10 @@ in
       });
       default = [ ];
     };
+    localMediaDir = mkOption {
+      description = "Directory Mopidy daemon will use for local extension";
+      type = types.str;
+    };
     extensionPackages = mkOption {
       description = "Extension packages to be installed in mopidy";
       type = types.listOf types.package;
@@ -36,45 +39,6 @@ in
       description = "Address of pulseaudio server to attach to";
       type = types.str;
       default = "127.0.0.1";
-    };
-    spotify = mkOption {
-      type = types.submodule {
-        options = {
-          enable = mkEnableOption "Spotify support for Mopidy";
-          credentials = mkOption {
-            type = types.submodule {
-              options = {
-                username = mkOption {
-                  description = "Spotify username";
-                  type = types.str;
-                };
-                password = mkOption {
-                  description = "Spotify password";
-                  type = types.str;
-                };
-                client_id = mkOption {
-                  description = "Spotify API client id";
-                  type = types.str;
-                };
-                client_secret = mkOption {
-                  description = "Spotify API client secret";
-                  type = types.str;
-                };
-              };
-            };
-          };
-          bitrate = mkOption {
-            description = "Bitrate for streaming on spotify";
-            type = types.int;
-            default = 320;
-          };
-          volumeNormalization = mkOption {
-            description = "Whether to enable volume normalization on spotify";
-            type = types.bool;
-            default = false;
-          };
-        };
-      };
     };
     mpd = {
       enable = mkEnableOption "mpd support for Mopidy";
@@ -87,17 +51,6 @@ in
       configuration = ''
         [audio]
         output = pulsesink server=127.0.0.1
-
-        ${optionalString cfg.spotify.enable ''
-          [spotify]
-          username = ${cfg.spotify.credentials.username}
-          password = ${cfg.spotify.credentials.password}
-          client_id = ${cfg.spotify.credentials.client_id}
-          client_secret = ${cfg.spotify.credentials.client_secret}
-          bitrate = ${builtins.toString cfg.spotify.bitrate}
-          volume_normalization = ${lib.boolToString cfg.spotify.volumeNormalization}
-
-        ''}
 
         [file]
         enabled = true
@@ -119,6 +72,10 @@ in
           .zip
         follow_symlinks = false
         metadata_timeout = 1000
+
+        [local]
+        enabled = true
+        media_dir = ${cfg.localMediaDir}
 
         [http]
         enabled = true

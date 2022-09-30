@@ -90,6 +90,11 @@
    '((gnuplot . t)
      (dot . t)))
 
+  ;; Org mode citations
+  (require 'oc-basic)
+  (require 'oc-csl)
+  (require 'oc-biblatex)
+
   ;; Add templates
   (add-to-list 'org-modules 'org-tempo t)
   (add-to-list 'org-structure-template-alist
@@ -172,3 +177,8 @@ DEADLINE: %^t"
            slime-repl-prompt-face
            rear-nonsticky
            (slime-repl-prompt read-only font-lock-face intangible)))))))
+
+(defun remove-trailing-whitespace-on-save ()
+  (add-hook 'before-save-hook #'delete-trailing-whitespace nil t))
+(add-hook 'lisp-mode-hook #'remove-trailing-whitespace-on-save)
+

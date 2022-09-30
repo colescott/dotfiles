@@ -1,4 +1,4 @@
-{ pkgs, unstable, ... }:
+{ pkgs, ... }:
 
 ''
 ### Variables
@@ -15,35 +15,37 @@ set $pass ${pkgs.rofi-pass}/bin/rofi-pass
 ### Output configuration
 #
 # Default wallpaper
-#output * bg ~/wallpaper.png fill
-#output * pos 1920 0 res 1920x1080 scale 1
-#output eDP-1 pos 0 0 res 1920x1080 scale 1
+output * bg ~/wallpaper.png fill
+output * pos 1920 0 res 1920x1080 scale 1
+output eDP-1 pos 0 0 res 1920x1080 scale 1
 
 
 ### Auto sleep
 #
-#exec ${pkgs.swayidle}/bin/swayidle -w \
-#          timeout 300 '${pkgs.swaylock}/bin/swaylock -f -c 000000' \
-#          timeout 600 '${pkgs.sway}/bin/swaymsg "output * dpms off"' \
-#               resume '${pkgs.sway}/bin/swaymsg "output * dpms on"' \
-#         before-sleep '${pkgs.swaylock}/bin/swaylock -f -c 000000' \
-#                 lock '${pkgs.swaylock}/bin/swaylock -f -c 000000'
-#bindsym $mod+Shift+z exec loginctl lock-session
+exec ${pkgs.swayidle}/bin/swayidle -w \
+          timeout 300 '${pkgs.swaylock}/bin/swaylock -f -c 000000' \
+          timeout 600 '${pkgs.sway}/bin/swaymsg "output * dpms off"' \
+               resume '${pkgs.sway}/bin/swaymsg "output * dpms on"' \
+         before-sleep '${pkgs.swaylock}/bin/swaylock -f -c 000000' \
+                 lock '${pkgs.swaylock}/bin/swaylock -f -c 000000'
+bindsym $mod+Shift+z exec loginctl lock-session
+
+### Notifications
+#
+exec ${pkgs.mako}/bin/mako
 
 ### Input configuration
 #
-#input "1:1:AT_Translated_Set_2_keyboard" {
-#    xkb_layout us
-#    xkb_options ctrl:nocaps
-#}
-#
-#input "2:7:SynPS/2_Synaptics_TouchPad" {
-#    dwt enabled
-#    tap enabled
-#    middle_emulation enabled
-#}
+input "1:1:AT_Translated_Set_2_keyboard" {
+    xkb_layout us
+    xkb_options ctrl:nocaps
+}
 
-exec setxkbmap -option ctrl:nocaps
+input "2:7:SynPS/2_Synaptics_TouchPad" {
+    dwt enabled
+    tap enabled
+    middle_emulation enabled
+}
 
 ### Key bindings
 #
@@ -63,7 +65,7 @@ exec setxkbmap -option ctrl:nocaps
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
-    floating_modifier $mod
+    floating_modifier $mod normal
 
     # reload the configuration file
     bindsym $mod+Shift+q reload
@@ -216,10 +218,10 @@ default_border none
 #
 # Status Bar:
 #
-#bar {
-#    swaybar_command ${pkgs.waybar.override { pulseSupport = true; } }/bin/waybar
-#    position top
-#}
+bar {
+    swaybar_command ${pkgs.waybar.override { pulseSupport = true; } }/bin/waybar
+    position top
+}
 
 # Fix bug with DPI breaking after external monitor is disconnected
 # See swaywm/wlroots#1119

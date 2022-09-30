@@ -11,10 +11,11 @@ in
   };
 
   config = mkIf cfg.enable {
+    /*
     nixpkgs.config.packageOverrides = pkgs: {
       steam = pkgs.steam.override {
         extraPkgs = pkgs: with pkgs; [
-          gnome3.gtk
+          gtk3
           zlib
           dbus
           freetype
@@ -28,6 +29,7 @@ in
         ];
       };
     };
+    */
 
     programs.steam.enable = true;
   };
